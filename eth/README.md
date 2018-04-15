@@ -10,5 +10,10 @@ region w { broadcast
 	params:
 		text
 } region broadcast
-	
+
+### 以太坊客户端EVM启动
+
+1. 安装以太坊客户端 geth
+2. 启动geth， `geth --rpc --rpccorsdomain "*" --rpcapi "db,eth,net,web3" --rpcport "8080"`
+3. 使用web3js模块连接本地EVM服务，进行以太坊相关操作
 
