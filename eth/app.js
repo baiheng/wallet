@@ -1,15 +1,16 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const fs = require('fs');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
+const index = require('./routes/index');
+const users = require('./routes/users');
 const broadcast = require('./routes/broadcast');
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -23,7 +24,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/eth/broadcast', broadcast);
+
+// app.use('/api/eth/broadcast', broadcast);
+// 引入routes目录下模块，文件名为模块名称
+fs.readdirSync('./routes').forEach((route) => {
+	if(!route.match(/^\w/)) return;
+	const res = route.match(/^(\w+)(\.js)?/);
+	if(!res) return;
+	const routeName = res[1];
+	app.use(`/api/eth/${routeName}`, require(`./routes/${route}`));
+})
 app.use('/', index);
 app.use('/users', users);
 

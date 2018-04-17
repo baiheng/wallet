@@ -14,7 +14,21 @@ region w { broadcast
 ### 以太坊客户端EVM启动
 
 1. 安装以太坊客户端 geth
-2. 启动geth， `geth --rpc --rpccorsdomain "*" --rpcapi "db,eth,net,web3" --rpcport "8080"` 
-    测试环境 `geth --rpc --rpccorsdomain "*" --rpcapi "db,eth,net,web3" --rpcport "8080" --rinkeby`
+```shell
+    yum install golang
+    yum install gmp-devel
+    git clone https://github.com/ethereum/go-ethereum
+    cd go-ethereum
+    make geth
+```
+
+2. 启动geth， 
+```shell
+    sudo mkdir -p /data/logs/geth/info.log
+    sudo mkdir -p /data/logs/geth/info_rinkeby.log  #测试环境
+    nohup geth --rpc --rpccorsdomain "*" --rpcapi "db,eth,net,web3" --rpcport "12080" > /data/logs/geth/info.log 2>&1 
+    nohup geth --rpc --rpccorsdomain "*" --rpcapi "db,eth,net,web3" --rpcport "17080" --rinkeby  > /data/logs/geth/info_rinkeby.log 2>&1 #测试环境
+```
+
 3. 使用web3js模块连接本地EVM服务，进行以太坊相关操作
 
