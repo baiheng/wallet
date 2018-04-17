@@ -4,7 +4,6 @@ const { responseError, responseSuccess } = require('../libs/response');
 
 const broadcast = (req, res, next) => {
 	const { tx_hex = "" } = req.body;
-	console.log(req.body);
 	if (!tx_hex) {
 		return responseError(res, 50001, 'tx_hex should not be empty');
 	}

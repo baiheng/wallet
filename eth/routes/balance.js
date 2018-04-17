@@ -3,8 +3,7 @@ const { responseError, responseSuccess } = require('../libs/response');
 
 
 const balance = (req, res, next) => {
-	const { address = "" } = req.body;
-	console.log(req.body);
+	const { address = "" } = req.query;
 	if (!address) {
 		return responseError(res, 50001, 'address should not be empty');
 	}
