@@ -24,8 +24,8 @@ region w { broadcast
 
 2. 启动geth， 
 ```shell
-    sudo mkdir -p /data/logs/geth/info.log
-    sudo mkdir -p /data/logs/geth/info_rinkeby.log  #测试环境
+    sudo mkdir -p /data/logs/geth/
+    #  测试环境: info_rinkeby.log  现网环境： info.log
     nohup geth --rpc --rpccorsdomain "*" --rpcapi "db,eth,net,web3" --rpcport "12080" > /data/logs/geth/info.log 2>&1 
     nohup geth --rpc --rpccorsdomain "*" --rpcapi "db,eth,net,web3" --rpcport "17080" --rinkeby  > /data/logs/geth/info_rinkeby.log 2>&1 #测试环境
 ```
