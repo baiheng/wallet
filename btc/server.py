@@ -30,7 +30,7 @@ methods = ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"]
 
 for i in modules:
     for j in getattr(importlib.import_module('{0}.urls'.format(i)), 'urls'):
-        url_prefix = "/v1/{0}/{1}".format(i, j[0])
+        url_prefix = "/v1/api/{0}/{1}".format(i, j[0])
         app.add_route(dispatch(j), url_prefix, methods=methods)
 
 
