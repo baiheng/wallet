@@ -58,9 +58,9 @@ startAccess(){
 	cd $SCRIPTPATH;
 	cd access;
 	if [[ "$debug" = true ]]; then
-		PORT=8080 nohup node ./bin/coinAccess > "$logPath/$targetProcess.log" 2>&1 &
+		DEBUG=true PORT=8080 nohup node ./bin/coinAccess > "$logPath/$targetProcess.log" 2>&1 &
 	else
-		PORT=8080 nohup node ./bin/coinAccess > "$logPath/$targetProcess.log" 2>&1 &
+		DEBUG=false PORT=8080 nohup node ./bin/coinAccess > "$logPath/$targetProcess.log" 2>&1 &
 		echo $?
 	fi
 }
@@ -69,9 +69,9 @@ startEth(){
 	cd $SCRIPTPATH;
 	cd eth;
 	if [[ "$debug" = true ]]; then
-		PORT=8001 nohup node ./bin/coinEth > "$logPath/$targetProcess.log" 2>&1 &
+		DEBUG=true PORT=8001 nohup node ./bin/coinEth > "$logPath/$targetProcess.log" 2>&1 &
 	else
-		PORT=8001 nohup node ./bin/coinEth > "$logPath/$targetProcess.log" 2>&1 &
+		DEBUG=false PORT=8001 nohup node ./bin/coinEth > "$logPath/$targetProcess.log" 2>&1 &
 		echo $?
 	fi
 }
