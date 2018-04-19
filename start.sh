@@ -21,9 +21,10 @@ while getopts ":d:f:" opts; do
 done
 
 killProcess(){
-	ps -fe|grep processString | grep -v grep
+	PID=`ps -ef | grep "$targetProcess" | grep -v "grep" | awk '{print   $2}'`;
+	ps -ef | grep "$targetProcess" | grep -v "grep";
 	if [[ $? -eq 0 ]]; then
-		kill -9 `ps -ef | grep "$targetProcess" | grep -v "grep" | awk "{print   $2}"`;
+		kill -9 $PID;
 	fi
 }
 
@@ -54,55 +55,35 @@ startGeth(){
 }
 
 startAccess(){
-	echo $SCRIPTPATH
 	cd $SCRIPTPATH;
 	cd access;
 	if [[ "$debug" = true ]]; then
-		PORT=17080 nohup node ./bin/coinAccess > "$logPath/$targetProcess.log" 2>&1 &
+		PORT=8080 nohup node ./bin/coinAccess > "$logPath/$targetProcess.log" 2>&1 &
 	else
-		PORT=12080 nohup node ./bin/coinAccess > "$logPath/$targetProcess.log" 2>&1 &
+		PORT=8080 nohup node ./bin/coinAccess > "$logPath/$targetProcess.log" 2>&1 &
+		echo $?
 	fi
 }
 
 startEth(){
 	cd $SCRIPTPATH;
 	cd eth;
-	pwd
 	if [[ "$debug" = true ]]; then
-		PORT=17080 nohup node ./bin/coinEth > "$logPath/$targetProcess.log" 2>&1 &
+		PORT=8001 nohup node ./bin/coinEth > "$logPath/$targetProcess.log" 2>&1 &
 	else
-		PORT=12080 nohup node ./bin/coinEth > "$logPath/$targetProcess.log" 2>&1 &
+		PORT=8001 nohup node ./bin/coinEth > "$logPath/$targetProcess.log" 2>&1 &
+		echo $?
 	fi
 }
 
 
 killAllProcess;
 createLogFile;
-# targetProcess="geth";
-# startGeth;
+targetProcess="geth";
+startGeth;
 targetProcess="coinAccess";
 startAccess;
 targetProcess="coinEth";
 startEth;
 echo $debug $logPath;
 exit;
-
-targetProcess="coinAccess";
-killProcess;
-killProcess;
-
-
-
-## 删除所有进程
-## 创建log文件夹
-
-
-
-
-
-
-
-
-#nohup geth --rpc --rpccorsdomain "*" --rpcapi "db,eth,net,web3" --rpcport "17080" --rinkeby  > /data/logs/geth/info_rinkeby.log 2>&1
-
-
