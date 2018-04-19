@@ -7,6 +7,7 @@ from .settings_production import BaseConfig
 class LocalConfig(BaseConfig):
     DEBUG = True
     CREATE_TABLE = True
+    SERVER_PORT = 18288
 
     # token
     # 7天有效期

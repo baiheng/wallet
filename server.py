@@ -6,6 +6,7 @@ import importlib
 
 # 先加载这里的logger
 from common.mylog import logger
+from conf import settings
 
 from sanic import Sanic
 
@@ -29,9 +30,9 @@ methods = ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"]
 
 for i in modules:
     for j in getattr(importlib.import_module('{0}.urls'.format(i)), 'urls'):
-        url_prefix = "/v1/{0}/{1}".format(i, j[0])
+        url_prefix = "/v1/api/{0}/{1}".format(i, j[0])
         app.add_route(dispatch(j), url_prefix, methods=methods)
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=18289, debug=True)
+    app.run(host='0.0.0.0', port=settings.SERVER_PORT, debug=True)

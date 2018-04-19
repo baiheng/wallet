@@ -5,6 +5,7 @@
 class BaseConfig(object):
     DEBUG = True
     CREATE_TABLE = True
+    SERVER_PORT = 18289
 
     # 3小时后自动重连mysql
     MYSQL_CONNECT_TIMEOUT = 3 * 24 * 60 * 60
@@ -20,3 +21,13 @@ class BaseConfig(object):
     MYSQL_USER = "root"
     MYSQL_PWD = ""
     MYSQL_DB = "test_wallet"
+
+    # redis
+    REDIS_HOST = '127.0.0.1'
+    REDIS_PORT = 6379
+    REDIS_DB = '1'
+    REDIS_PWD = ''
+
+    # 验证码过期时间 5分钟
+    CODE_EXPIRE_TIME = 5 * 60
+    TEMPLATEID = 31018633
