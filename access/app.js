@@ -36,6 +36,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/v1/api/user/login', user.login);
 app.use('/v1/api/user/verifyCode', user.verifyCode);
+app.post('/v1/api/user/address', user.saveAddress);
+app.get('/v1/api/user/address', user.getAddress);
 enhanceProxyPass(app);
 // app.use(proxies(app));
 
