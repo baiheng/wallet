@@ -57,6 +57,7 @@ startGeth(){
 startAccess(){
 	cd $SCRIPTPATH;
 	cd access;
+	npm install;
 	if [[ "$debug" = true ]]; then
 		DEBUG=true PORT=8080 nohup node ./bin/coinAccess > "$logPath/$targetProcess.log" 2>&1 &
 	else
@@ -68,6 +69,7 @@ startAccess(){
 startEth(){
 	cd $SCRIPTPATH;
 	cd eth;
+	npm install;
 	if [[ "$debug" = true ]]; then
 		DEBUG=true PORT=8001 nohup node ./bin/coinEth > "$logPath/$targetProcess.log" 2>&1 &
 	else
