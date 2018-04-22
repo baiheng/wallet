@@ -30,4 +30,4 @@ class BaseConfig(object):
 
     # 验证码过期时间 5分钟
     CODE_EXPIRE_TIME = 5 * 60
-    TEMPLATEID = 31018633
+    TEMPLATEID = 219065158
