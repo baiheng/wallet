@@ -1,6 +1,6 @@
 let web3UrlPort = process.env.WEB3PORT;
 web3UrlPort = isNaN(parseInt(web3UrlPort)) ? 0 : parseInt(web3UrlPort);
-const isDebug = !!process.env.DEBUG;
+const isDebug = process.env.DEBUG !== 'false';
 module.exports = {
 	isDebug,
 	web3Url: `http://localhost:${web3UrlPort || 12080}`, // 本地evm服务地址

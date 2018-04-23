@@ -59,9 +59,9 @@ startAccess(){
 	cd access;
 	npm install;
 	if [[ "$debug" = true ]]; then
-		DEBUG=true WEB3PORT=8080 nohup node ./bin/coinAccess > "$logPath/$targetProcess.log" 2>&1 &
+		DEBUG=true PORT=8080 nohup node ./bin/coinAccess > "$logPath/$targetProcess.log" 2>&1 &
 	else
-		DEBUG=false WEB3PORT=8080 nohup node ./bin/coinAccess > "$logPath/$targetProcess.log" 2>&1 &
+		DEBUG=false PORT=8080 nohup node ./bin/coinAccess > "$logPath/$targetProcess.log" 2>&1 &
 	fi
 }
 
@@ -70,9 +70,9 @@ startEth(){
 	cd eth;
 	npm install;
 	if [[ "$debug" = true ]]; then
-		DEBUG=true PORT=8001 nohup node ./bin/coinEth > "$logPath/$targetProcess.log" 2>&1 &
+		DEBUG=true nohup node ./bin/coinEth > "$logPath/$targetProcess.log" 2>&1 &
 	else
-		DEBUG=false PORT=8001 nohup node ./bin/coinEth > "$logPath/$targetProcess.log" 2>&1 &
+		DEBUG=false nohup node ./bin/coinEth > "$logPath/$targetProcess.log" 2>&1 &
 		echo $?
 	fi
 }
