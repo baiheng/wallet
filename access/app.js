@@ -28,6 +28,7 @@ app.use(session({
     resave: false
 }));
 
+enhanceProxyPass(app);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -38,7 +39,6 @@ app.use('/v1/api/user/login', user.login);
 app.use('/v1/api/user/verifyCode', user.verifyCode);
 app.post('/v1/api/user/address', user.saveAddress);
 app.get('/v1/api/user/address', user.getAddress);
-enhanceProxyPass(app);
 // app.use(proxies(app));
 
 app.use('/', index);
