@@ -9,6 +9,7 @@ logPath="/var/log/coin";
 
 SCRIPTPATH="$(cd "$(dirname "$0")" && pwd)"
 
+export PATH=$PATH:/usr/local/go-ethereum/build/bin/
 
 ## 获取命令行参数
 while getopts ":d:f:" opts; do
