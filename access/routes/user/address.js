@@ -8,7 +8,10 @@ const config = require('../../config');
 
 const saveAddress = (req, res, next) => {
 	var address = req.body;
-	var userID = "1"
+	var userID = "1";
+	if(!Array.isArray(address)){
+		return responseError(res, 3, "params error")
+	}
 	mysqlClient.query('delete from address where userID = "1"',
 		(error, result, fields) => {
 			if(error){
