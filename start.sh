@@ -48,10 +48,10 @@ createLogFile(){
 
 startGeth(){
 	if [[ "$debug" = true ]]; then
-		nohup geth --light --lightkdf --rpc --rpccorsdomain "localhost" --rpcapi "db,eth,net,web3" --rpcport "17080" --rinkeby  > "$logPath/$targetProcess.log" 2>&1 &
+		nohup geth --light --lightkdf --rpc --rpccorsdomain "localhost" --rpcapi "db,eth,net,web3" --rpcport "17080" --rinkeby  >> "$logPath/$targetProcess.log" 2>>&1 &
 		return;
 	else
-		nohup geth --light --lightkdf --lightpeers 15 --rpc --rpccorsdomain "localhost" --rpcapi "db,eth,net,web3" --rpcport "12080" > "$logPath/$targetProcess.log" 2>&1 &
+		nohup geth --light --lightkdf --lightpeers 15 --rpc --rpccorsdomain "localhost" --rpcapi "db,eth,net,web3" --rpcport "12080" >> "$logPath/$targetProcess.log" 2>>&1 &
 	fi
 }
 
@@ -60,9 +60,9 @@ startAccess(){
 	cd access;
 	npm install;
 	if [[ "$debug" = true ]]; then
-		DEBUG=true PORT=8080 nohup node ./bin/coinAccess > "$logPath/$targetProcess.log" 2>&1 &
+		DEBUG=true PORT=8080 nohup node ./bin/coinAccess >> "$logPath/$targetProcess.log" 2>>&1 &
 	else
-		DEBUG=false PORT=8080 nohup node ./bin/coinAccess > "$logPath/$targetProcess.log" 2>&1 &
+		DEBUG=false PORT=8080 nohup node ./bin/coinAccess >> "$logPath/$targetProcess.log" 2>>&1 &
 	fi
 }
 
@@ -71,9 +71,9 @@ startEth(){
 	cd eth;
 	npm install;
 	if [[ "$debug" = true ]]; then
-		DEBUG=true nohup node ./bin/coinEth > "$logPath/$targetProcess.log" 2>&1 &
+		DEBUG=true nohup node ./bin/coinEth >> "$logPath/$targetProcess.log" 2>>&1 &
 	else
-		DEBUG=false nohup node ./bin/coinEth > "$logPath/$targetProcess.log" 2>&1 &
+		DEBUG=false nohup node ./bin/coinEth >> "$logPath/$targetProcess.log" 2>>&1 &
 		echo $?
 	fi
 }
