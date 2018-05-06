@@ -1,7 +1,7 @@
 module.exports = {
 	codeValidatePeriod: 5*60,
 	authValidatePeriod: 60*60*24*7,
-	rpcHost: 'http://test-coin.xiaoshutech.com',
+	rpcHost: 'http://139.199.166.104',
 	redis: {
 		host: '127.0.0.1',
 		port: '6379',
