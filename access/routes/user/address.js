@@ -72,6 +72,7 @@ const getAddress = (req, res, next) => {
 
 			q.all(promises).then(function(pData){
 				for(let i in pData){
+					console.log(pData[i])
 					if(data[i].type == "btc"){
 						if(pData[i].ret == 0){
 							data[i].amount = pData[i].data.satoshi
@@ -82,7 +83,7 @@ const getAddress = (req, res, next) => {
 					}else{
 						if(pData[i].ret == 0){
 							data[i].amount = pData[i].data.balance
-							data[i].cny = pData[i].data.cny
+							data[i].cny = pData[i].data.cny || 0
 						}else{
 							throw "request eth balance error"
 						}
