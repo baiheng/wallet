@@ -37,6 +37,8 @@ killAllProcess(){
 	killProcess;
 	targetProcess="coinEth";
 	killProcess;
+	argetProcess="coinTron";
+	killProcess;
 }
 
 
@@ -78,6 +80,17 @@ startEth(){
 	fi
 }
 
+startTron(){
+	cd $SCRIPTPATH;
+	cd tron;
+	npm install;
+	if [[ "$debug" = true ]]; then
+		DEBUG=true nohup node ./bin/coinTron >> "$logPath/$targetProcess.log" 2>&1 &
+	else
+		DEBUG=false nohup node ./bin/coinTron >> "$logPath/$targetProcess.log" 2>&1 &
+		echo $?
+	fi
+}
 
 killAllProcess;
 createLogFile;
@@ -87,5 +100,6 @@ targetProcess="coinAccess";
 startAccess;
 targetProcess="coinEth";
 startEth;
-echo $debug $logPath;
+targetProcess="coinTron";
+startTron;
 exit;
