@@ -26,7 +26,6 @@ const balance = (req, res, next) => {
 	}
 	Promise.all([etherscan(balanceOption), convertToPrice('cny'), etherscan(nonceOption)])
 		.then(data => {
-			console.log(data);
 			const tBalance = data[0].result;
 			const price = data[1];
 			const nonce = !isNaN(parseInt(data[2].result)) ? parseInt(data[2].result) : 0;
