@@ -1,10 +1,10 @@
 const { responseError, responseSuccess } = require('../libs/response');
 
-const TronClient = require('../libs/TronClient');
+const { httpClient } = require('../libs/TronClient');
 
 // 
 const assetIssueList = (req, res, next) => {
-	TronClient.getAssetIssueList()
+	httpClient.getAssetIssueList()
 		.then(list => {
 	   return responseSuccess(res, { assetIssueList: list });
 		})

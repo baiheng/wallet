@@ -10,9 +10,11 @@ const { EmptyMessage } = require('@tronprotocol/wallet-api/src/protocol/api/api_
 // grpcClient.api.getNowBlock()
 // 	.then(data => console.log(data))
 // 	.catch(e => console.log(e));
-console.log(EmptyMessage);
-grpcClient.api.listAccounts(new EmptyMessage() ).then(data => console.log(data));
 
+
+/*console.log(EmptyMessage);
+grpcClient.api.listAccounts(new EmptyMessage() ).then(data => console.log(data));
+*/
 const balance = (req, res, next) => {
 	const { address = "" } = req.query;
 	if (!address) {
