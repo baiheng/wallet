@@ -1,6 +1,14 @@
 const wallet = require("@tronprotocol/wallet-api");
 
 const HttpClient = wallet.HttpClient;
-const Client = new HttpClient();
+const GrpcClient = wallet.GrpcClient;
 
-module.exports = Client;
+const httpClient = new HttpClient();
+const grpcClient = new GrpcClient({
+	hostname: "localhost",
+  port: 50051,
+});
+module.exports = {
+	httpClient,
+	grpcClient
+};

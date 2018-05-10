@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/cionTron"
   },
   "dependencies": {
-    "@tronprotocol/wallet-api": "0.0.29",
+    "@tronprotocol/wallet-api": "0.0.35",
     "body-parser": "~1.17.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
