@@ -13,7 +13,8 @@ const broadcast = (req, res, next) => {
 	const newTransaction = new Transaction();
 	newTransaction.setRawData(newRaw);
 	newTransaction.setSignatureList([ new Uint8Array(Buffer.from(signedData, 'base64')) ]);
-
+	console.log(newTransaction.toObject().rawData.contractList);
+	console.log(newTransaction.toObject());
 	grpcClient.api.broadcastTransaction(newTransaction)
 		.then(data => {
 			const d = data.toObject();

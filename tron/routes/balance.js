@@ -11,7 +11,7 @@ const balance = (req, res, next) => {
 	}
 	httpClient.getAccountBalances(address)
 		.then(balances => {
-	   return responseSuccess(res, { balance: balances });
+	   return responseSuccess(res, { ...balances });
 		})
 		.catch(e => {
 	    console.log('getBalance error', e);
