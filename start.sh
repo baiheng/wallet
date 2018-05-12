@@ -37,7 +37,7 @@ killAllProcess(){
 	killProcess;
 	targetProcess="coinEth";
 	killProcess;
-	argetProcess="coinTron";
+	targetProcess="coinTron";
 	killProcess;
 }
 
