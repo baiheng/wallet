@@ -1,22 +1,31 @@
 const { responseError, responseSuccess } = require('../libs/response');
 
-const TronClient = require('../libs/TronClient');
+const { httpClient, grpcClient } = require('../libs/TronClient');
+const { Transaction } = require('@tronprotocol/wallet-api/src/protocol/core/Tron_pb');
+const { TransferContract, TransferAssetContract, VoteWitnessContract, Account } = require('@tronprotocol/wallet-api/src/protocol/core/Contract_pb');
 
-// 
 const broadcast = (req, res, next) => {
-	const { password, token, to, amount } = req.body;
-	if (!password || !token || !to || !amount)
-	  return responseError(res, 50001, "params error");
-	console.log(req.body);
-	TronClient.send(password, token, to, amount)
-		.then(tranData => {
-			console.log('broadcast', tranData);
-	   return responseSuccess(res, {});
+	const { signedData, rawData } = req.body;
+	if (!signedData || !rawData) {
+		return responseError(res, 50001, 'params should not be empty');
+	}
+	const newRaw = Transaction.raw.deserializeBinary([...Buffer.from(rawData, 'base64')]);
+	const newTransaction = new Transaction();
+	newTransaction.setRawData(newRaw);
+	newTransaction.setSignatureList([ new Uint8Array(Buffer.from(signedData, 'base64')) ]);
+
+	grpcClient.api.broadcastTransaction(newTransaction)
+		.then(data => {
+			const d = data.toObject();
+			if (d.code !== 0) {
+				throw { ...d, message: Buffer.from (d.message, 'base64').toString()}
+			}
+	   	return responseSuccess(res, {});
 		})
 		.catch(e => {
-	    console.log('getbroadcast error', e);
-	  	return responseError(res, 50000, err.message);
-		});
+			console.log('broadcastTransaction error', e);
+			return responseError(res, 50000, e);
+		})
 }
 
 module.exports = broadcast;
