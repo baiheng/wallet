@@ -6,41 +6,39 @@ const { VoteWitnessContract } = require('@tronprotocol/wallet-api/src/protocol/c
 
 const { getBase64AddressFromBase58 } = require('../libs/tool/address');
 
-const voteWitnessContract = new VoteWitnessContract([
-	getBase64AddressFromBase58('27VkVK7HDp9nHLKrdMj431Aq9xXyLWAgtHa'),
-	[
-		[getBase64AddressFromBase58('27WPirKuXZgSdFMra7K2HWUptWjxSTgqy51'), 3590410209]
-	],
-	true,
-]);
+// const voteWitnessContract = new VoteWitnessContract([
+// 	getBase64AddressFromBase58('V'),
+// 	[
+// 		[getBase64AddressFromBase58('27WPirKuXZgSdFMra7K2HWUptWjxSTgqy51'), 500]
+// 	],
+// 	true,
+// ]);
 
-console.log(voteWitnessContract.toObject());
-grpcClient.api.voteWitnessAccount(voteWitnessContract)
-		.then(data => console.log('voteWitnessAccount success', data.toObject()))
-		.catch(e => console.log('voteWitnessAccount error', e));
+// console.log(voteWitnessContract.toObject());
+// grpcClient.api.voteWitnessAccount(voteWitnessContract)
+// 		.then(data => console.log('voteWitnessAccount success', data.toObject()))
+// 		.catch(e => console.log('voteWitnessAccount error', e));
 
 const witnessVote = (req, res, next) => {
-	const { signedData, rawData } = req.body;
-	if (!signedData || !rawData) {
+	const { ownerAddress, voteAddressList, support } = req.body;
+	if (!ownerAddress || !voteAddressList || !voteAddressList instanceof Array || !voteAddressList.length) {
 		return responseError(res, 50001, 'params should not be empty');
 	}
-	const newRaw = Transaction.raw.deserializeBinary([...Buffer.from(rawData, 'base64')]);
-	const newTransaction = new Transaction();
-	newTransaction.setRawData(newRaw);
-	newTransaction.setSignatureList([ new Uint8Array(Buffer.from(signedData, 'base64')) ]);
-	console.log(newTransaction.toObject().rawData.contractList);
-	console.log(newTransaction.toObject());
-	grpcClient.api.broadcastTransaction(newTransaction)
-		.then(data => {
-			const d = data.toObject();
-			if (d.code !== 0) {
-				throw { ...d, message: Buffer.from (d.message, 'base64').toString()}
-			}
-	   	return responseSuccess(res, {});
+	const voteWitnessContract = new VoteWitnessContract([
+		getBase64AddressFromBase58(ownerAddress),
+		voteAddressList.map(vote => [ getBase64AddressFromBase58(vote.voteAddress), isNaN(parseInt(vote.voteCount)) ? 0 : parseInt(vote.voteCount) ]),
+		!!support,
+	])
+
+	grpcClient.api.voteWitnessAccount(voteWitnessContract)
+		.then((data) => {
+			responseSuccess(res, {
+				rawData: Buffer.from(data.getRawData().serializeBinary()).toString('base64')
+			})
 		})
-		.catch(e => {
-			console.log('broadcastTransaction error', e);
-			return responseError(res, 50000, e);
+		.catch((e) => {
+			console.log('voteWitnessAccount error', e);
+			return responseError(res, 500001, e);
 		})
 }
 
