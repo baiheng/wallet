@@ -18,6 +18,6 @@
 #      REVISION:  ---
 #===============================================================================
 
-curl -l -H "Content-type: application/json" -X POST -d \
-	'[{"type": "btc", "amount":10,"cny":100,"address":"123123131"},{"type": "eth", "amount":11,"cny":200,"address":"1adfa23123131"}]'\
+curl -il -H "Content-Type: application/json;" -X POST -d \
+	'{"address": [{"type": "btc", "amount":10,"cny":100,"address":"btc123123131"},{"type": "eth", "amount":11,"cny":200,"address":"eth1adfa23123131"}], "userID": "1"}'\
 	"http://127.0.0.1:18080/v1/api/user/address"

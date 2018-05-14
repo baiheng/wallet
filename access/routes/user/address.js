@@ -9,27 +9,50 @@ const config = require('../../config');
 
 const saveAddress = (req, res, next) => {
 	var { address, userID }= req.body;
-	//var userID = "1";
+	console.log(req.body)
 	if(!Array.isArray(address) || userID == null){
 		return responseError(res, 3, "params error")
 	}
-	mysqlClient.query('delete from address where userID = ?', [userID],
-		(error, result, fields) => {
-			if(error){
-				return responseError(res, 1, "db error");
+	var promises = []
+	var defer = q.defer()
+	for(let i of address){
+		var opt = mysqlClient.query('select * from address where userID = ? and type = ?', [userID, i.type],
+			(error, result, fields) => {
+				if(error){
+					return "db error " + error
+				}
+				if(result.length == 0){
+					let sql = 'insert into address (type, address, userID) values ("' + i.type + '", "' + i.address + '", "' + userID + '")'
+					mysqlClient.query(sql, (error) => {
+							if(error){
+								console.log(error)
+								return "db error " + error
+							}
+						}
+					)
+					/* 不知道为啥这里又执行不了
+					mysqlClient.query('insert into address (type, address, userID) values (?, ?, ?)'
+						[i.type, i.address, userID],
+						(error, result, fields) => {
+							if(error){
+								console.log(error)
+								throw "db error " + error
+							}
+						}
+					)
+					*/
+				}
+				return true
 			}
-			for(var i of address){
-				mysqlClient.query('insert into address (type, address, userID) values(?,?,?)',
-				[i.type, i.address, userID],
-				(error, result) => {
-					if(error){
-						return responseError(res, 1, "db error");
-					}
-				})
-			}
-		}
-	)
-	return responseSuccess(res, {});
+		)
+		promises.push(opt)
+	}
+	q.all(promises).then(function(pData){
+		defer.resolve();
+		return responseSuccess(res, {});
+	}).fail(function(error){
+		return responseError(res, 1, error)
+	});
 }
 
 const getAddress = (req, res, next) => {
