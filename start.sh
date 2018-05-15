@@ -94,8 +94,8 @@ startTron(){
 
 killAllProcess;
 createLogFile;
-targetProcess="geth";
-startGeth;
+#targetProcess="geth";
+#startGeth;
 targetProcess="coinAccess";
 startAccess;
 targetProcess="coinEth";
