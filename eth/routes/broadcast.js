@@ -19,7 +19,7 @@ const broadcast = (req, res, next) => {
 			if (data.error) {
 				throw data.error;
 			}
-	   	return responseSuccess(res, "");
+	   	return responseSuccess(res, { tx_id: data.result || ''});
 		})
 		.catch(e => {
 			console.log('sendRawTransaction error', e);
