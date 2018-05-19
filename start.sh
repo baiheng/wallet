@@ -39,6 +39,8 @@ killAllProcess(){
 	killProcess;
 	targetProcess="coinTron";
 	killProcess;
+	targetProcess="coinVechain";
+	killProcess;
 }
 
 
@@ -92,6 +94,18 @@ startTron(){
 	fi
 }
 
+startVechain(){
+	cd $SCRIPTPATH;
+	cd vechain;
+	npm install;
+	if [[ "$debug" = true ]]; then
+		DEBUG=true nohup node ./bin/coinVechain >> "$logPath/$targetProcess.log" 2>&1 &
+	else
+		DEBUG=false nohup node ./bin/coinVechain >> "$logPath/$targetProcess.log" 2>&1 &
+		echo $?
+	fi
+}
+
 killAllProcess;
 createLogFile;
 #targetProcess="geth";
@@ -102,4 +116,6 @@ targetProcess="coinEth";
 startEth;
 targetProcess="coinTron";
 startTron;
+targetProcess="vechain";
+startVechain;
 exit;
