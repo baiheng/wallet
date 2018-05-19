@@ -30,10 +30,16 @@ class BaseView(object):
         self._controller_obj = controller_obj
         self.__start_time = time.time()
 
-    def dispatch(self):
+    def dispatch(self, fun_name=None):
         self.get_input_arguments()
         self._input["session"] = self._db_session
         try:
+            if fun_name:
+                func = getattr(self, fun_name, None)
+                if func:
+                    return func()
+                else:
+                    return self._response(error_msg.PARAMS_ERROR)
             if self._request.method == "GET":
                 action = self._input.get("action", None)
                 if action:
@@ -228,13 +234,17 @@ class BaseView(object):
 
     def get_input_arguments(self):
         # 获取url参数和json参数
+        _input = dict()
         if self._request.method == "GET":
-            self._input = self._request.raw_args
+            _input = self._request.raw_args
         if self._request.content_type == "application/json":
-            self._input = self._request.json
+            _input = self._request.json
         if (self._request.content_type == "application/x-www-form-urlencoded"
                 or self._request.content_type == "multipart/form-data"):
-            self._input = self._request.form
+            _input = self._request.form
+        if len(self._input) != 0:
+            _input.update(self._input)
+        self._input = _input
 
     def check_input_arguments(self,
                               must_input=None,
