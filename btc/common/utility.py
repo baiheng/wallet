@@ -6,12 +6,12 @@ from decimal import Decimal
 
 from sqlalchemy.ext.declarative import DeclarativeMeta
 
-from .sqlalchemy_ctl import Base
-from .sqlalchemy_ctl import DBSession
-from .sqlalchemy_ctl import engine
 
 
 def create_table(table_name=""):
+    return
+    from .sqlalchemy_ctl import Base
+    from .sqlalchemy_ctl import engine
     if table_name == "":
         Base.metadata.create_all(engine)
     else:
@@ -19,6 +19,9 @@ def create_table(table_name=""):
 
 
 def drop_table(table_name=""):
+    return
+    from .sqlalchemy_ctl import Base
+    from .sqlalchemy_ctl import engine
     if table_name == "":
         Base.metadata.drop_all(engine)
     else:

@@ -28,4 +28,5 @@ else:
         pool_recycle=settings.MYSQL_CONNECT_TIMEOUT,
         encoding='utf-8')
 
-DBSession = sessionmaker(bind=engine, expire_on_commit=False)
+#DBSession = sessionmaker(bind=engine, expire_on_commit=False)
+DBSession = None

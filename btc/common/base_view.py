@@ -7,7 +7,6 @@ import traceback
 
 from sanic import Sanic, response
 
-from .sqlalchemy_ctl import DBSession
 from common.mylog import logger
 from common import utility
 from common import error_msg
@@ -21,7 +20,6 @@ class BaseView(object):
         if controller_obj != None:
             del kwargs["controller_obj"]
         self._request = args[0]
-        self._db_session = DBSession()
         self._user = None
         self._ret, self._msg = error_msg.SUCCESS
         self._data = {}
@@ -32,7 +30,6 @@ class BaseView(object):
 
     def dispatch(self, fun_name=None):
         self.get_input_arguments()
-        self._input["session"] = self._db_session
         try:
             if fun_name:
                 func = getattr(self, fun_name, None)
@@ -80,10 +77,8 @@ class BaseView(object):
         if self._controller_obj is not None:
             if self._do_get(disable_output=disable_output):
                 self._ret, self._msg = error_msg.SUCCESS
-                self._db_session.commit()
             else:
                 self._ret, self._msg = error_msg.SERVER_ERROR
-                self._db_session.rollback()
             return self._response()
         else:
             self._ret, self._msg = error_msg.SERVER_ERROR
@@ -122,10 +117,8 @@ class BaseView(object):
     def _do_post(self):
         try:
             if self._controller_obj.new_item(**self._input):
-                self._db_session.commit()
                 return True
             else:
-                self._db_session.rollback()
                 logger.error("post method error")
                 return False
         except Exception as e:
@@ -152,10 +145,8 @@ class BaseView(object):
     def _do_put(self):
         try:
             if self._controller_obj.update_item(**self._input):
-                self._db_session.commit()
                 return True
             else:
-                self._db_session.rollback()
                 return False
         except Exception as e:
             logger.error("put method error: %s" % e)
@@ -180,14 +171,11 @@ class BaseView(object):
     def _do_delete(self):
         try:
             if self._controller_obj.delete_item(**self._input):
-                self._db_session.commit()
                 return True
             else:
-                self._db_session.rollback()
                 logger.error("delete method error")
                 return False
         except Exception as e:
-            self._db_session.rollback()
             logger.error("delete method error: %s" % e)
             return False
 
@@ -224,7 +212,6 @@ class BaseView(object):
                     self._resp_json,
                     (time.time() - self.__start_time)*1000
                     ))
-        self._db_session.close()
         return response.text(
                 self._resp_json,
                 content_type="application/json")
