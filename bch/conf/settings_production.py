@@ -5,7 +5,7 @@
 class BaseConfig(object):
     DEBUG = True
     CREATE_TABLE = True
-    SERVER_PORT = 18289
+    SERVER_PORT = 10004
 
     # 3小时后自动重连mysql
     MYSQL_CONNECT_TIMEOUT = 3 * 24 * 60 * 60
