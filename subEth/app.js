@@ -6,6 +6,8 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 
+const config = require('./config');
+
 const index = require('./routes/index');
 const users = require('./routes/users');
 
@@ -23,6 +25,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+config.contracts.forEach((contract) => {
+  app.use((req, res, next) => {
+    const reg = new RegExp(`^/api/${contract.name}`);
+    const result = req.url.match(reg);
+    if(result)
+      req.contract = { ...contract };
+    next();
+  })
+})
 
 // app.use('/api/eth/broadcast', broadcast);
 // 引入routes目录下模块，文件名为模块名称
@@ -31,8 +42,11 @@ fs.readdirSync('./routes').forEach((route) => {
 	const res = route.match(/^(\w+)(\.js)?/);
 	if(!res) return;
 	const routeName = res[1];
-	app.use(`/api/vechain/${routeName}`, require(`./routes/${route}`));
+  config.contracts.forEach(contract => {
+    app.use(`/api/${contract.name}/${routeName}`, require(`./routes/${route}`));
+  });
 })
+
 app.use('/', index);
 app.use('/users', users);
 

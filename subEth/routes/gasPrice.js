@@ -16,14 +16,6 @@ const gasPrice = (req, res, next) => {
 			console.log('gasPrice error', e);
 	  	return responseError(res, 50000, e.message);
 		})
-	/*web3.eth.getGasPrice(function(err, result) {
-	  if (err){
-	    console.log('gasPrice error', err);
-	  	return responseError(res, 50000, err.message);
-	  }
-	   console.log('gasPrice success', result);
-	   return responseSuccess(res, { gasPrice: result });
-	});*/
 }
 
 module.exports = gasPrice;

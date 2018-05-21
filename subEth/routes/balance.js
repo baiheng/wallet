@@ -7,6 +7,7 @@ const config = require('../config');
 // https://api.etherscan.io/api?module=proxy&action=eth_getTransactionCount&address=0x2910543af39aba0cd09dbb2d50200b3e800a63d2&tag=latest&apikey=YourApiKeyToken
 const balance = (req, res, next) => {
 	const { address = "" } = req.query;
+	const contract = req.contract;
 	if (!address) {
 		return responseError(res, 50001, 'address should not be empty');
 	}
@@ -17,7 +18,7 @@ const balance = (req, res, next) => {
 		address,
 		module: 'account',
 		action: 'tokenbalance',
-		contractaddress: config.contractaddress,
+		contractaddress: contract.address,
 		tag: 'latest',
 	};
 	const nonceOption = {
@@ -26,7 +27,7 @@ const balance = (req, res, next) => {
 		action: 'eth_getTransactionCount',
 		tag: 'latest'
 	}
-	Promise.all([etherscan(balanceOption), convertToPrice('cny'), etherscan(nonceOption)])
+	Promise.all([etherscan(balanceOption), convertToPrice(contract.name ,'cny'), etherscan(nonceOption)])
 		.then(data => {
 			console.log(data);
 			const tBalance = data[0].result;
