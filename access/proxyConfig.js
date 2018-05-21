@@ -4,6 +4,7 @@ const config = {
 		'/api/tron/*': 'http://localhost:10002',
 		'/api/vechain/*': 'http://localhost:10003',
 		'/api/eos/*': 'http://localhost:10003',
+		'/api/bch/*': 'http://localhost:10004',
 	}
 }
 

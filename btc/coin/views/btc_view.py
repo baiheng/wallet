@@ -1,5 +1,7 @@
 #!/bin/env python
 # -*- coding:utf8 -*-
+
+import json
 import requests
 
 from common.base_view import BaseView
@@ -36,15 +38,22 @@ class BtcView(BaseView):
             cny = satoshi_to_currency_cached(satoshi, "cny")
         else:
             cny = 0
-        data = dict(satoshi=satoshi, cny=cny)
+        data = dict(satoshi=str(satoshi), cny=float(cny))
         return self._response(data=data)
 
-    def get_action_transaction(self):
+    def get_action_utxo(self):
         if not self.check_input_arguments(["address"]):
             return self._response(error_msg.PARAMS_ERROR)
-        url = "https://insight.bitpay.com/api/txs?address={0}".format(
-                self._input["address"])
+        unspent = NetworkAPI.get_unspent(self._input["address"]) 
+        return self._response(data=[i.to_dict() for i in unspent])
+
+    def get_action_transaction(self):
+        if not self.check_input_arguments(["address", "page"]):
+            return self._response(error_msg.PARAMS_ERROR)
+        url = "https://insight.bitpay.com/api/txs?address={0}&pageNum={1}".format(
+                self._input["address"], self._input["page"])
         data = requests.get(url).json()
+        total_page = data.get("pagesTotal", 1)
         rdata = list()
         for i in data.get("txs", []):
             tmp = dict()
@@ -84,7 +93,7 @@ class BtcView(BaseView):
             tmp["vout"] = vout
 
             rdata.append(tmp)
-        return self._response(data=rdata)
+        return self._response(data=dict(list=rdata, total_page=total_page))
 
     def get_action_transaction_detail(self):
         if not self.check_input_arguments(["tx_id"]):
@@ -110,3 +119,32 @@ class BtcView(BaseView):
             tmp["value"] = currency_to_satoshi_cached(j.get("value", "0"), "btc")
             self._data["vout"].append(tmp)
         return self._response()
+
+    def get_action_block(self):
+        url = "https://insight.bitpay.com/api/blocks?limit=1"
+        r = requests.get(url).json()
+        self._data = r.get("blocks", [{}])[0].get("height", 0)
+        return self._response()
+
+    def post_action_decode_tx(self):
+        if not self.check_input_arguments(["tx_hex"]):
+            return self._response(error_msg.PARAMS_ERROR)
+        url = "https://live.blockcypher.com/btc/decodetx/"
+        try:
+            r = requests.post(url, data={
+                "tx_hex": self._input["tx_hex"],
+                "coin_symbol": "btc",
+                "csrfmiddlewaretoken": "0x7JG1aNt03Ovn4vPL7wz05s8F8DtUDq"
+                }, cookies={"csrftoken": "0x7JG1aNt03Ovn4vPL7wz05s8F8DtUDq"})
+            find_key = "<pre><small>"
+            s = r.text.find(find_key)
+            if s == -1:
+                return self._response(error_msg.PARAMS_ERROR)
+            else:
+                e = r.text.find("</small>", s)
+                result = r.text[s+len(find_key):e].replace("\n", "")
+                self._data = json.loads(result)
+                return self._response()
+        except Exception as e:
+            logger.error("decode tx_hex http error {0}".format(e))
+            return self._response(error_msg.SERVER_ERROR)
