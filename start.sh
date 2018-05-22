@@ -52,10 +52,10 @@ createLogFile(){
 
 startGeth(){
 	if [[ "$debug" = true ]]; then
-		nohup geth --syncmode "light" --lightkdf --rpc --rpccorsdomain "localhost" --rpcapi "db,eth,net,web3" --rpcport "17080" --rinkeby  >> "$logPath/$targetProcess.log" 2>&1 &
+		nohup geth --rpc --rpccorsdomain "localhost" --rpcapi "db,eth,net,web3" --rpcport "17080" --rinkeby  >> "$logPath/$targetProcess.log" 2>&1 &
 		return;
 	else
-		nohup geth --syncmode "light" --lightkdf --rpc --rpccorsdomain "localhost" --rpcapi "db,eth,net,web3" --rpcport "12080" >> "$logPath/$targetProcess.log" 2>&1 &
+		nohup geth --rpc --rpccorsdomain "localhost" --rpcapi "db,eth,net,web3" --rpcport "12080" >> "$logPath/$targetProcess.log" 2>&1 &
 	fi
 }
 
@@ -108,8 +108,8 @@ startSubEth(){
 
 killAllProcess;
 createLogFile;
-#targetProcess="geth";
-#startGeth;
+targetProcess="geth";
+startGeth;
 targetProcess="coinAccess";
 startAccess;
 targetProcess="coinEth";
