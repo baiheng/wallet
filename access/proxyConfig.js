@@ -5,6 +5,7 @@ const config = {
 		'/api/vechain/*': 'http://localhost:10003',
 		'/api/eos/*': 'http://localhost:10003',
 		'/api/bch/*': 'http://localhost:10004',
+		'/api/neo/*': 'http://localhost:10005',
 	}
 }
 
