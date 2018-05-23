@@ -1,7 +1,6 @@
 const { responseError, responseSuccess } = require('../libs/response');
 const etherscan = require('../libs/etherscan');
 const web3 = require('../libs/web3');
-	console.log(web3.eth.sendSignedTransaction.toString());
 
 // https://api.etherscan.io/api?module=proxy&action=eth_sendRawTransaction&hex=0xf904808000831cfde080&apikey=YourApiKeyToken
 const broadcast = (req, res, next) => {
@@ -31,8 +30,8 @@ const broadcast = (req, res, next) => {
 	    console.log('sendRawTransaction error', err);
 	  	return responseError(res, 50000, err.message);
 	  }
-	   console.log('sendRawTransaction success', hash);
-	   return responseSuccess(res, '');
+	   // console.log('sendRawTransaction success', hash);
+	   return responseSuccess(res, { tx_id: hash });
 	});
 }
 

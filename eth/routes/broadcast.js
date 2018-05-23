@@ -31,8 +31,8 @@ const broadcast = (req, res, next) => {
 	    console.log('sendRawTransaction error', err);
 	  	return responseError(res, 50000, err.message);
 	  }
-	   console.log('sendRawTransaction success', hash);
-	   return responseSuccess(res, '');
+	   // console.log('sendRawTransaction success', hash);
+	   return responseSuccess(res, { tx_id: hash });
 	});
 }
 
