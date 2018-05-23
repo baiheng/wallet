@@ -43,6 +43,8 @@ killAllProcess(){
 	killProcess;
 	targetProcess="coinSubEth";
 	killProcess;
+	targetProcess="coinNeo";
+	killProcess;
 }
 
 
@@ -117,6 +119,18 @@ startSubEth(){
 	fi
 }
 
+startNeo(){
+	cd $SCRIPTPATH;
+	cd neo;
+	npm install;
+	if [[ "$debug" = true ]]; then
+		DEBUG=true nohup node ./bin/coinNeo >> "$logPath/$targetProcess.log" 2>&1 &
+	else
+		DEBUG=false nohup node ./bin/coinNeo >> "$logPath/$targetProcess.log" 2>&1 &
+		echo $?
+	fi
+}
+
 killAllProcess;
 createLogFile;
 # targetProcess="geth";
@@ -131,4 +145,9 @@ targetProcess="coinTron";
 startTron;
 targetProcess="coinSubEth";
 startSubEth;
+targetProcess="coinNeo";
+startNeo;
+
+ps -ef | grep parity;
+ps -ef | grep node;
 exit;
