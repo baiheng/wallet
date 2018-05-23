@@ -41,7 +41,7 @@ killAllProcess(){
 	killProcess;
 	targetProcess="coinTron";
 	killProcess;
-	targetProcess="coinSibEth";
+	targetProcess="coinSubEth";
 	killProcess;
 }
 
@@ -129,6 +129,6 @@ targetProcess="coinEth";
 startEth;
 targetProcess="coinTron";
 startTron;
-targetProcess="subEth";
+targetProcess="coinSubEth";
 startSubEth;
 exit;
