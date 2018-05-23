@@ -33,6 +33,8 @@ killProcess(){
 killAllProcess(){
 	targetProcess="geth";
 	killProcess;
+	targetProcess='parity';
+	killProcess;
 	targetProcess="coinAccess";
 	killProcess;
 	targetProcess="coinEth";
@@ -47,6 +49,15 @@ killAllProcess(){
 createLogFile(){
 	if [ ! -d "$logPath" ]; then
 	  mkdir -p $logPath;
+	fi
+}
+
+startParity(){
+	if [[ "$debug" = true ]]; then
+		nohup parity  >> "$logPath/$targetProcess.log" 2>&1 &
+		return;
+	else
+		nohup parity  >> "$logPath/$targetProcess.log" 2>&1 &
 	fi
 }
 
@@ -108,8 +119,10 @@ startSubEth(){
 
 killAllProcess;
 createLogFile;
-targetProcess="geth";
-startGeth;
+# targetProcess="geth";
+# startGeth;
+targetProcess="parity";
+startParity;
 targetProcess="coinAccess";
 startAccess;
 targetProcess="coinEth";
