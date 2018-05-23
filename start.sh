@@ -54,10 +54,10 @@ createLogFile(){
 
 startParity(){
 	if [[ "$debug" = true ]]; then
-		nohup parity  >> "$logPath/$targetProcess.log" 2>&1 &
+		nohup parity  --light >> "$logPath/$targetProcess.log" 2>&1 &
 		return;
 	else
-		nohup parity  >> "$logPath/$targetProcess.log" 2>&1 &
+		nohup parity  --light >> "$logPath/$targetProcess.log" 2>&1 &
 	fi
 }
 
