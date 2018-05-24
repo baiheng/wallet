@@ -90,6 +90,15 @@ const getAddress = (req, res, next) => {
 						}
 					}
 					promises.push(request(opt))
+				}else if(result[i].type == "tron"){
+					var opt = {
+						uri: `${config.rpcHost}/v1/api/tron/balance`,
+						json: true,
+						qs: {
+							address: result[i].address
+						}
+					}
+					promises.push(request(opt))
 				}
 			}
 
@@ -103,7 +112,14 @@ const getAddress = (req, res, next) => {
 						}else{
 							throw "request btc balance error"
 						}
-					}else{
+					}else if(data[i].type == "tron"){
+						if(pData[i].ret == 0){
+							data[i].amount = pData[i].data.balances
+							data[i].cny = 0
+						}else{
+							throw "request btc balance error"
+						}
+					}else if(data[i].type == "eth"){
 						if(pData[i].ret == 0){
 							data[i].amount = pData[i].data.balance
 							data[i].cny = pData[i].data.cny || 0
