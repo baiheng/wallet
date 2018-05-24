@@ -3,24 +3,29 @@ const etherscan = require('../libs/etherscan');
 const request = require('request-promise');
 const config = require('../config');
 
-const staticResult = {
-	txsCount: 0,
-	lastModify: Date.now(),
-}
-const uri = `https://ethplorer.io/service/service.php?data=${config.contractaddress}`;
+const staticResult = {};
+
+config.contracts.forEach((contract) => {
+	staticResult[contract.name] = {
+		txsCount: 0,
+		lastModify: Date.now(),
+	}
+});
 // https://api.etherscan.io/api?module=proxy&action=eth_blockNumber&apikey=YourApiKeyToken
 // 
 // https://ethplorer.io/service/service.php?data=0xd850942ef8811f2a866692a623011bde52a462c1
 const getBlockNumber = (req, res, next) => {
+	const { address, name } = req.contract;
 	const now = Date.now();
-	console.log(staticResult);
-	if (staticResult.txsCount && now - staticResult.lastModify <= 20 * 1000)
-		return responseSuccess(res, { blockNumber: staticResult.txsCount });
+	const uri = `https://ethplorer.io/service/service.php?data=${address}`;
+
+	if (staticResult[name].txsCount && now - staticResult[name].lastModify <= 20 * 1000)
+		return responseSuccess(res, { blockNumber: staticResult[name].txsCount });
 	request({ uri, json: true })
 		.then(data => {
-			staticResult.txsCount = data.contract.txsCount;
-			staticResult.lastModify = now;
-			return responseSuccess(res, { blockNumber: staticResult.txsCount })
+			staticResult[name].txsCount = data.contract.txsCount;
+			staticResult[name].lastModify = now;
+			return responseSuccess(res, { blockNumber: staticResult[name].txsCount })
 		})
 		.catch(e => {
 			console.log('getBlockNumber error', e);

@@ -1,16 +1,17 @@
-const { responseError, responseSuccess } = require('../libs/response');
-const etherscan = require('../libs/etherscan');
 
-// https://api.etherscan.io/api?module=proxy&action=eth_gasPrice&apikey=YourApiKeyToken
+const { responseError, responseSuccess } = require('../libs/response');
+const rpcClient = require('../libs/rpcClient');
+
+// https://api.rpcClient.io/api?module=proxy&action=eth_gasPrice&apikey=YourApiKeyToken
 const gasPrice = (req, res, next) => {
-	const option = {
-		module: 'proxy',
-		action: 'eth_gasPrice',
-	}
-	etherscan(option)
+	
+	rpcClient('get_height')
 		.then(data => {
-			const gasPrice = parseInt(data.result);
-	   	return responseSuccess(res, { gasPrice: gasPrice });
+			const blockNumber = isNaN(parseInt(data.height)) ? 0 : parseInt(data.height);
+			return rpcClient(`get_fees_in_range/${blockNumber-10}-${blockNumber}`)
+		})
+		.then(data => {
+	   	return responseSuccess(res, data);
 		})
 		.catch(e => {
 			console.log('gasPrice error', e);

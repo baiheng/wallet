@@ -33,13 +33,17 @@ killProcess(){
 killAllProcess(){
 	targetProcess="geth";
 	killProcess;
+	targetProcess='parity';
+	killProcess;
 	targetProcess="coinAccess";
 	killProcess;
 	targetProcess="coinEth";
 	killProcess;
 	targetProcess="coinTron";
 	killProcess;
-	targetProcess="coinVechain";
+	targetProcess="coinSubEth";
+	killProcess;
+	targetProcess="coinNeo";
 	killProcess;
 }
 
@@ -50,12 +54,21 @@ createLogFile(){
 	fi
 }
 
-startGeth(){
+startParity(){
 	if [[ "$debug" = true ]]; then
-		nohup geth --syncmode "light" --lightkdf --rpc --rpccorsdomain "localhost" --rpcapi "db,eth,net,web3" --rpcport "17080" --rinkeby  >> "$logPath/$targetProcess.log" 2>&1 &
+		nohup parity  --light >> "$logPath/$targetProcess.log" 2>&1 &
 		return;
 	else
-		nohup geth --syncmode "light" --lightkdf --rpc --rpccorsdomain "localhost" --rpcapi "db,eth,net,web3" --rpcport "12080" >> "$logPath/$targetProcess.log" 2>&1 &
+		nohup parity  --light >> "$logPath/$targetProcess.log" 2>&1 &
+	fi
+}
+
+startGeth(){
+	if [[ "$debug" = true ]]; then
+		nohup geth --rpc --rpccorsdomain "localhost" --rpcapi "db,eth,net,web3" --rpcport "17080" --rinkeby  >> "$logPath/$targetProcess.log" 2>&1 &
+		return;
+	else
+		nohup geth --rpc --rpccorsdomain "localhost" --rpcapi "db,eth,net,web3" --rpcport "12080" >> "$logPath/$targetProcess.log" 2>&1 &
 	fi
 }
 
@@ -94,28 +107,47 @@ startTron(){
 	fi
 }
 
-startVechain(){
+startSubEth(){
 	cd $SCRIPTPATH;
-	cd vechain;
+	cd subEth;
 	npm install;
 	if [[ "$debug" = true ]]; then
-		DEBUG=true nohup node ./bin/coinVechain >> "$logPath/$targetProcess.log" 2>&1 &
+		DEBUG=true nohup node ./bin/coinSubEth >> "$logPath/$targetProcess.log" 2>&1 &
 	else
-		DEBUG=false nohup node ./bin/coinVechain >> "$logPath/$targetProcess.log" 2>&1 &
+		DEBUG=false nohup node ./bin/coinSubEth >> "$logPath/$targetProcess.log" 2>&1 &
+		echo $?
+	fi
+}
+
+startNeo(){
+	cd $SCRIPTPATH;
+	cd neo;
+	npm install;
+	if [[ "$debug" = true ]]; then
+		DEBUG=true nohup node ./bin/coinNeo >> "$logPath/$targetProcess.log" 2>&1 &
+	else
+		DEBUG=false nohup node ./bin/coinNeo >> "$logPath/$targetProcess.log" 2>&1 &
 		echo $?
 	fi
 }
 
 killAllProcess;
 createLogFile;
-#targetProcess="geth";
-#startGeth;
+# targetProcess="geth";
+# startGeth;
+targetProcess="parity";
+startParity;
 targetProcess="coinAccess";
 startAccess;
 targetProcess="coinEth";
 startEth;
 targetProcess="coinTron";
 startTron;
-targetProcess="vechain";
-startVechain;
+targetProcess="coinSubEth";
+startSubEth;
+targetProcess="coinNeo";
+startNeo;
+
+ps -ef | grep parity;
+ps -ef | grep node;
 exit;

@@ -3,9 +3,9 @@
  */
 const request = require('request-promise');
 // https://cn.investing.com/currencyconverter/service/RunConvert?fromCurrency=189&toCurrency=41&fromAmount=1&toAmount=9590&currencyType=1&refreshCharts=true&dateConvert=
-function convertToPrice(currency = 'cny') {
+function convertToPrice(name, currency = 'cny') {
 	const opt = {
-		uri: `https://api.coinmarketcap.com/v1/ticker/vechain/?convert=${currency}`,
+		uri: `https://api.coinmarketcap.com/v1/ticker/${name}/?convert=${currency}`,
 		json: true,
 	}
 	return request(opt).then(data => {

@@ -1,5 +1,6 @@
 const { responseError, responseSuccess } = require('../libs/response');
 const etherscan = require('../libs/etherscan');
+const web3 = require('../libs/web3');
 
 // https://api.etherscan.io/api?module=proxy&action=eth_sendRawTransaction&hex=0xf904808000831cfde080&apikey=YourApiKeyToken
 const broadcast = (req, res, next) => {
@@ -8,7 +9,7 @@ const broadcast = (req, res, next) => {
 		return responseError(res, 50001, 'tx_hex should not be empty');
 	}
 	const hash = tx_hex.match(/^0x/) ? tx_hex : `0x${tx_hex}`;
-	const option = {
+	/*const option = {
 		module: 'proxy',
 		action: 'eth_sendRawTransaction',
 		hex: hash,
@@ -23,16 +24,15 @@ const broadcast = (req, res, next) => {
 		.catch(e => {
 			console.log('sendRawTransaction error', e);
 	  	return responseError(res, 50000, e.message);
-		});
-
-	// web3.eth.sendSignedTransaction(hash, function(err, hash) {
-	//   if (err){
-	//     console.log('sendRawTransaction error', err);
-	//   	return responseError(res, 50000, err.message);
-	//   }
-	//    console.log('sendRawTransaction success', hash);
-	//    return responseSuccess(res, '');
-	// });
+		});*/
+	web3.eth.sendSignedTransaction(hash, function(err, hash) {
+	  if (err){
+	    console.log('sendRawTransaction error', err);
+	  	return responseError(res, 50000, err.message);
+	  }
+	   // console.log('sendRawTransaction success', hash);
+	   return responseSuccess(res, { tx_id: hash });
+	});
 }
 
 module.exports = broadcast;
