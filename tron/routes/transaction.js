@@ -24,6 +24,8 @@ const transaction = async (req, res, next) => {
 			// 	.then(d => {
 			// 		console.log(Buffer.from(data.getRawData().serializeBinary()).toString('base64'), data.getSignatureList_asB64());
 			// 	})
+			if (!data.getRawData())
+				throw data.toObject();
 			return responseSuccess(res, {
 	   		rawData: Buffer.from(data.getRawData().serializeBinary()).toString('base64'),
 	   	});
