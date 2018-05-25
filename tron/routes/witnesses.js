@@ -1,12 +1,13 @@
-const { responseError, responseSuccess } = require('../libs/response');
+const { EmptyMessage } = require("@tronprotocol/wallet-api/src/protocol/api/api_pb");
 
+const { responseError, responseSuccess } = require('../libs/response');
 const httpClient = require('../libs/TronClient').httpClient;
 const grpcClient = require('../libs/TronClient').grpcClient;
 
 const witnesses = (req, res, next) => {
-	httpClient.getWitnesses()
+	grpcClient.api.listWitnesses(new EmptyMessage())
 		.then(data => {
-	   return responseSuccess(res, { witnesses: data });
+	   return responseSuccess(res, data.toObject().witnessesList);
 		})
 		.catch(e => {
 	    console.log('getBalance error', e);
