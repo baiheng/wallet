@@ -114,14 +114,14 @@ const getAddress = (req, res, next) => {
 						}
 					}else if(data[i].type == "tron"){
 						if(pData[i].ret == 0){
-							data[i].amount = pData[i].data.balances
-							data[i].cny = 0
+							data[i].amount = pData[i].data.balance || 0
+							data[i].cny = pData[i].data.cny || 0
 						}else{
 							throw "request btc balance error"
 						}
 					}else if(data[i].type == "eth"){
 						if(pData[i].ret == 0){
-							data[i].amount = pData[i].data.balance
+							data[i].amount = pData[i].data.balance || 0
 							data[i].cny = pData[i].data.cny || 0
 						}else{
 							throw "request eth balance error"
