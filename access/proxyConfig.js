@@ -6,6 +6,7 @@ const config = {
 		'/api/eos/*': 'http://localhost:10003',
 		'/api/bch/*': 'http://localhost:10004',
 		'/api/neo/*': 'http://localhost:10005',
+		'/api/ltc/*': 'http://localhost:10006',
 	}
 }
 
