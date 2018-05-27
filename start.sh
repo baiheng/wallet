@@ -45,6 +45,8 @@ killAllProcess(){
 	killProcess;
 	targetProcess="coinNeo";
 	killProcess;
+	targetProcess="coinRipple";
+	killProcess;
 }
 
 
@@ -131,6 +133,18 @@ startNeo(){
 	fi
 }
 
+startRipple(){
+	cd $SCRIPTPATH;
+	cd ripple;
+	npm install;
+	if [[ "$debug" = true ]]; then
+		DEBUG=true nohup node ./bin/coinRipple >> "$logPath/$targetProcess.log" 2>&1 &
+	else
+		DEBUG=false nohup node ./bin/coinRipple >> "$logPath/$targetProcess.log" 2>&1 &
+		echo $?
+	fi
+}
+
 killAllProcess;
 createLogFile;
 # targetProcess="geth";
@@ -147,6 +161,8 @@ targetProcess="coinSubEth";
 startSubEth;
 targetProcess="coinNeo";
 startNeo;
+# targetProcess="coinRipple";
+# startRipple;
 
 ps -ef | grep parity;
 ps -ef | grep node;

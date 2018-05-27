@@ -13,7 +13,7 @@ const freezeBalance = (req, res, next) => {
 		return responseError(res, 50001, 'address should not be empty');
 	}
 	const contract = new FreezeBalanceContract([getBase64AddressFromBase58(address), frozenBalance * 1000000, frozenDuration]);
-
+	
 	grpcClient.api.freezeBalance(contract)
 		.then(data => {
 			return responseSuccess(res, { rawData: Buffer.from(data.getRawData().serializeBinary()).toString('base64') });
