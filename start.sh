@@ -65,6 +65,16 @@ startParity(){
 	fi
 }
 
+startEtcParity(){
+	echo "hahah"
+	if [[ "$debug" = true ]]; then
+		nohup parity  --light --chain=classic --config ./vmConfig/etcParity.toml >> "$logPath/$targetProcess.log" 2>&1 &
+		return;
+	else
+		nohup parity  --light --chain=classic --config ./vmConfig/etcParity.toml >> "$logPath/$targetProcess.log" 2>&1 &
+	fi
+}
+
 startGeth(){
 	if [[ "$debug" = true ]]; then
 		nohup geth --rpc --rpccorsdomain "localhost" --rpcapi "db,eth,net,web3" --rpcport "17080" --rinkeby  >> "$logPath/$targetProcess.log" 2>&1 &
@@ -151,6 +161,8 @@ createLogFile;
 # startGeth;
 targetProcess="parity";
 startParity;
+# targetProcess="etcParity";
+# startEtcParity;
 targetProcess="coinAccess";
 startAccess;
 targetProcess="coinEth";
