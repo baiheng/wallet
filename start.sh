@@ -6,17 +6,19 @@
 debug=false;
 targetProcess="";
 logPath="/var/log/coin";
+shutdown=false;
 
 SCRIPTPATH="$(cd "$(dirname "$0")" && pwd)"
 
 export PATH=$PATH:/usr/local/go-ethereum/build/bin/
 
 ## 获取命令行参数
-while getopts ":d:f:" opts; do
+while getopts ":d:f:s:" opts; do
 	echo $opts $OPTARG
   case $opts in
       d) debug=$OPTARG ;;
       f) logPath=$OPTARG ;;
+      s) shutdown=$OPTARG ;;
       ?) ;;
   esac
 done
@@ -47,6 +49,9 @@ killAllProcess(){
 	killProcess;
 	targetProcess="coinRipple";
 	killProcess;
+	targetProcess="coinEthereumClassic";
+	killProcess;
+	
 }
 
 
@@ -66,12 +71,11 @@ startParity(){
 }
 
 startEtcParity(){
-	echo "hahah"
 	if [[ "$debug" = true ]]; then
-		nohup parity  --light --chain=classic --config ./vmConfig/etcParity.toml >> "$logPath/$targetProcess.log" 2>&1 &
+		nohup parity --chain classic --config ./vmConfig/etcParity.toml >> "$logPath/$targetProcess.log" 2>&1 &
 		return;
 	else
-		nohup parity  --light --chain=classic --config ./vmConfig/etcParity.toml >> "$logPath/$targetProcess.log" 2>&1 &
+		nohup parity --chain classic  --config ./vmConfig/etcParity.toml >> "$logPath/$targetProcess.log" 2>&1 &
 	fi
 }
 
@@ -143,6 +147,18 @@ startNeo(){
 	fi
 }
 
+startEtc(){
+	cd $SCRIPTPATH;
+	cd etc;
+	npm install;
+	if [[ "$debug" = true ]]; then
+		DEBUG=true nohup node ./bin/coinEthereumClassic >> "$logPath/$targetProcess.log" 2>&1 &
+	else
+		DEBUG=false nohup node ./bin/coinEthereumClassic >> "$logPath/$targetProcess.log" 2>&1 &
+		echo $?
+	fi
+}
+
 startRipple(){
 	cd $SCRIPTPATH;
 	cd ripple;
@@ -157,12 +173,17 @@ startRipple(){
 
 killAllProcess;
 createLogFile;
+
+if [[ "$shutdown" = true ]]; then
+	exit;
+fi
+
 # targetProcess="geth";
 # startGeth;
 targetProcess="parity";
 startParity;
-# targetProcess="etcParity";
-# startEtcParity;
+targetProcess="etcParity";
+startEtcParity;
 targetProcess="coinAccess";
 startAccess;
 targetProcess="coinEth";
@@ -173,6 +194,8 @@ targetProcess="coinSubEth";
 startSubEth;
 targetProcess="coinNeo";
 startNeo;
+targetProcess="coinEthereumClassic";
+startEtc;
 # targetProcess="coinRipple";
 # startRipple;
 
