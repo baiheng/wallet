@@ -19,7 +19,7 @@ const broadcast = (req, res, next) => {
 			if (d.code !== 0) {
 				throw { ...d, message: Buffer.from (d.message, 'base64').toString()}
 			}
-	   	return responseSuccess(res, {});
+	   	return responseSuccess(res, d);
 		})
 		.catch(e => {
 			console.log('broadcastTransaction error', e);
