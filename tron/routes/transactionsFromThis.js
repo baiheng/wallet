@@ -13,8 +13,8 @@ const Transaction = (req, res, next) => {
 		return responseError(res, 50001, 'address should not be empty');
 	}
 	const account = new Account(['', '', getBase64AddressFromBase58(address)]);
-	// getGrpcClient().solidityApi.getTransactionsFromThis(account)
-	getGrpcClient().solidityApi.getNowBlock(new EmptyMessage())
+	getGrpcClient().solidityApi.getTransactionsFromThis(account)
+	// getGrpcClient().solidityApi.getNowBlock(new EmptyMessage())
 	
 		.then(data => {
 			return responseSuccess(res, data.toObject());
