@@ -1,5 +1,6 @@
 const { Account } = require('@tronprotocol/wallet-api/src/protocol/core/Tron_pb');
 const { responseError, responseSuccess } = require('../libs/response');
+const { EmptyMessage } = require("@tronprotocol/wallet-api/src/protocol/api/api_pb");
 
 const httpClient = require('../libs/TronClient').httpClient;
 const getGrpcClient = require('../libs/TronClient').getGrpcClient;
@@ -12,7 +13,9 @@ const Transaction = (req, res, next) => {
 		return responseError(res, 50001, 'address should not be empty');
 	}
 	const account = new Account(['', '', getBase64AddressFromBase58(address)]);
-	getGrpcClient().solidityApi.getTransactionsFromThis(account)
+	// getGrpcClient().solidityApi.getTransactionsFromThis(account)
+	getGrpcClient().solidityApi.getNowBlock(new EmptyMessage())
+	
 		.then(data => {
 			return responseSuccess(res, data.toObject());
 		})

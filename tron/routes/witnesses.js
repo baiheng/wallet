@@ -17,7 +17,7 @@ const witnesses = (req, res, next) => {
 		})
 		.catch(e => {
 	    console.log('getBalance error', e);
-	  	return responseError(res, 50000, err.message);
+	  	return responseError(res, 50000, e);
 		});
 }
 
