@@ -3,7 +3,7 @@ const { Account } = require('@tronprotocol/wallet-api/src/protocol/core/Tron_pb'
 const { responseError, responseSuccess } = require('../libs/response');
 
 const httpClient = require('../libs/TronClient').httpClient;
-const grpcClient = require('../libs/TronClient').grpcClient;
+const getGrpcClient = require('../libs/TronClient').getGrpcClient;
 const { getBase64AddressFromBase58 } = require('../libs/tool/address');
 const { convertToPrice } = require('../libs/convert');
 
@@ -13,7 +13,7 @@ const balance = (req, res, next) => {
 		return responseError(res, 50001, 'address should not be empty');
 	}
 	const account = new Account(['', '', getBase64AddressFromBase58(address)]);
-	Promise.all([grpcClient.api.getAccount(account), convertToPrice('cny'), grpcClient.api.getNowBlock(new EmptyMessage())])
+	Promise.all([getGrpcClient().api.getAccount(account), convertToPrice('cny'), getGrpcClient().api.getNowBlock(new EmptyMessage())])
 		.then(data => {
 			const tmpBalance = data[0].toObject();
 			const price = data[1];

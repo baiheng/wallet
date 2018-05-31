@@ -2,7 +2,7 @@ const { Account } = require('@tronprotocol/wallet-api/src/protocol/core/Tron_pb'
 const { responseError, responseSuccess } = require('../libs/response');
 
 const httpClient = require('../libs/TronClient').httpClient;
-const grpcClient = require('../libs/TronClient').grpcClient;
+const getGrpcClient = require('../libs/TronClient').getGrpcClient;
 const { getBase64AddressFromBase58 } = require('../libs/tool/address');
 const { convertToPrice } = require('../libs/convert');
 
@@ -12,7 +12,7 @@ const Transaction = (req, res, next) => {
 		return responseError(res, 50001, 'address should not be empty');
 	}
 	const account = new Account(['', '', getBase64AddressFromBase58(address)]);
-	grpcClient.solidityApi.getTransactionsToThis(account)
+	getGrpcClient().solidityApi.getTransactionsToThis(account)
 		.then(data => {
 			return responseSuccess(res, data.toObject());
 		})

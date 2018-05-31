@@ -9,9 +9,12 @@ const grpcClient = new GrpcClient({
 	hostname: "39.106.220.120",
   port: 50051,
 });
+
+const getGrpcClient = () =>  new GrpcClient({ hostname: "39.106.220.120", port: 50051 })
 module.exports = {
 	httpClient,
-	grpcClient
+	grpcClient,
+	getGrpcClient
 };
 
 /*

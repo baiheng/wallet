@@ -2,7 +2,7 @@ const { FreezeBalanceContract } = require('@tronprotocol/wallet-api/src/protocol
 const { Transaction } = require('@tronprotocol/wallet-api/src/protocol/core/Tron_pb');
 const { responseError, responseSuccess } = require('../libs/response');
 
-const grpcClient = require('../libs/TronClient').grpcClient;
+const getGrpcClient = require('../libs/TronClient').getGrpcClient;
 const { getBase64AddressFromBase58 } = require('../libs/tool/address');
 const { convertToPrice } = require('../libs/convert');
 
@@ -14,7 +14,7 @@ const freezeBalance = (req, res, next) => {
 	}
 	const contract = new FreezeBalanceContract([getBase64AddressFromBase58(address), frozenBalance * 1000000, frozenDuration]);
 	
-	grpcClient.api.freezeBalance(contract)
+	getGrpcClient().api.freezeBalance(contract)
 		.then(data => {
 			return responseSuccess(res, { rawData: Buffer.from(data.getRawData().serializeBinary()).toString('base64') });
 
