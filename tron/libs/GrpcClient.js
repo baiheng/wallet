@@ -14,7 +14,6 @@ class GrpcClient {
      * @type {WalletClient}
      */
     this.api = caller(`${this.hostname}:${this.port}`, WalletClient);
-    console.log(options, `${solidity.hostname}:${solidity.port}`);
     this.solidityApi = caller(`${solidity.hostname}:${solidity.port}`, WalletSolidityClient);
   }
 
