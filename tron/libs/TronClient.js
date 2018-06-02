@@ -13,7 +13,7 @@ const grpcClient = new GrpcClient({
 const getGrpcClient = () =>  {
 	return new GrpcClient({
 		fullNode: { hostname: "39.106.220.120", port: 50051 },
-		solidity: { hostname: "127.0.0.1", port: 50051 },
+		solidity: { hostname: "34.213.191.109", port: 18888 },
 	})
 }
 module.exports = {
