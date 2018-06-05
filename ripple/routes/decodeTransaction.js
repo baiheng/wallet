@@ -7,6 +7,8 @@ const gasPrice = (req, res, next) => {
 	const { tx_hex } = req.body;
 	if (!tx_hex || !tx_hex.match(/^0x/))
 	  return responseError(res, 50001, 'params error');
+	 
+	 return responseError(res, 50000, 'interface is building');
 
  	const decodedTx = txDecoder.decodeTx(tx_hex);
 
