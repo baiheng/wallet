@@ -196,8 +196,8 @@ targetProcess="coinNeo";
 startNeo;
 targetProcess="coinEthereumClassic";
 startEtc;
-# targetProcess="coinRipple";
-# startRipple;
+targetProcess="coinRipple";
+startRipple;
 
 ps -ef | grep parity;
 ps -ef | grep node;
