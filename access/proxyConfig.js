@@ -9,6 +9,7 @@ const config = {
 		'/api/ltc/*': 'http://localhost:10006',
 		'/api/ripple/*': 'http://localhost:10007',
 		'/api/etc/*': 'http://localhost:10008',
+		'/api/btc/*': 'http://localhost:10009',
 	}
 }
 
