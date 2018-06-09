@@ -7,6 +7,8 @@ const config = {
 		'/api/bch/*': 'http://localhost:10004',
 		'/api/neo/*': 'http://localhost:10005',
 		'/api/ltc/*': 'http://localhost:10006',
+		'/api/ripple/*': 'http://localhost:10007',
+		'/api/etc/*': 'http://localhost:10008',
 	}
 }
 

@@ -1,11 +1,11 @@
 const { EmptyMessage } = require("@tronprotocol/wallet-api/src/protocol/api/api_pb");
 const { responseError, responseSuccess } = require('../libs/response');
 
-const { httpClient, grpcClient } = require('../libs/TronClient');
+const { httpClient, getGrpcClient } = require('../libs/TronClient');
 
 // 
 const latestBlock = (req, res, next) => {
-	grpcClient.api.getNowBlock(new EmptyMessage())
+	getGrpcClient().api.getNowBlock(new EmptyMessage())
 		.then(data => {
 	  	return responseSuccess(res, { blockNumber: data.getBlockHeader().toObject().rawData.number });
 		})

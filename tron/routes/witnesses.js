@@ -2,11 +2,11 @@ const { EmptyMessage } = require("@tronprotocol/wallet-api/src/protocol/api/api_
 
 const { responseError, responseSuccess } = require('../libs/response');
 const httpClient = require('../libs/TronClient').httpClient;
-const grpcClient = require('../libs/TronClient').grpcClient;
+const getGrpcClient = require('../libs/TronClient').getGrpcClient;
 const { getBase64AddressFromBase58, getBase58AddressFromBase64 } = require('../libs/tool/address');
 
 const witnesses = (req, res, next) => {
-	grpcClient.api.listWitnesses(new EmptyMessage())
+	getGrpcClient().api.listWitnesses(new EmptyMessage())
 		.then(data => {
 			const witnesses = data.toObject().witnessesList.map(obj => ({
 				...obj,
@@ -17,7 +17,7 @@ const witnesses = (req, res, next) => {
 		})
 		.catch(e => {
 	    console.log('getBalance error', e);
-	  	return responseError(res, 50000, err.message);
+	  	return responseError(res, 50000, e);
 		});
 }
 

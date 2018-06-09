@@ -1,6 +1,6 @@
 const { responseError, responseSuccess } = require('../libs/response');
 
-const { httpClient, grpcClient } = require('../libs/TronClient');
+const { httpClient, getGrpcClient } = require('../libs/TronClient');
 const { Transaction } = require('@tronprotocol/wallet-api/src/protocol/core/Tron_pb');
 const { TransferContract, TransferAssetContract, VoteWitnessContract, Account } = require('@tronprotocol/wallet-api/src/protocol/core/Contract_pb');
 
@@ -13,13 +13,13 @@ const broadcast = (req, res, next) => {
 	const newTransaction = new Transaction();
 	newTransaction.setRawData(newRaw);
 	newTransaction.setSignatureList([ new Uint8Array(Buffer.from(signedData, 'base64')) ]);
-	grpcClient.api.broadcastTransaction(newTransaction)
+	getGrpcClient().api.broadcastTransaction(newTransaction)
 		.then(data => {
 			const d = data.toObject();
 			if (d.code !== 0) {
 				throw { ...d, message: Buffer.from (d.message, 'base64').toString()}
 			}
-	   	return responseSuccess(res, {});
+	   	return responseSuccess(res, d);
 		})
 		.catch(e => {
 			console.log('broadcastTransaction error', e);

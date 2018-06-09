@@ -1,6 +1,6 @@
 const { responseError, responseSuccess } = require('../libs/response');
 
-const { httpClient, grpcClient } = require('../libs/TronClient');
+const { httpClient, getGrpcClient } = require('../libs/TronClient');
 const { Transaction } = require('@tronprotocol/wallet-api/src/protocol/core/Tron_pb');
 const { VoteWitnessContract } = require('@tronprotocol/wallet-api/src/protocol/core/Contract_pb');
 
@@ -15,7 +15,7 @@ const { getBase64AddressFromBase58 } = require('../libs/tool/address');
 // ]);
 
 // console.log(voteWitnessContract.toObject());
-// grpcClient.api.voteWitnessAccount(voteWitnessContract)
+// getGrpcClient.api.voteWitnessAccount(voteWitnessContract)
 // 		.then(data => console.log('voteWitnessAccount success', data.toObject()))
 // 		.catch(e => console.log('voteWitnessAccount error', e));
 
@@ -30,7 +30,7 @@ const witnessVote = (req, res, next) => {
 		!!support,
 	])
 
-	grpcClient.api.voteWitnessAccount(voteWitnessContract)
+	getGrpcClient().api.voteWitnessAccount(voteWitnessContract)
 		.then((data) => {
 			responseSuccess(res, {
 				rawData: Buffer.from(data.getRawData().serializeBinary()).toString('base64')

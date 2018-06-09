@@ -6,15 +6,15 @@ const {WalletClient, WalletSolidityClient} = require("@tronprotocol/wallet-api/s
 class GrpcClient {
 
   constructor(options) {
-    this.hostname = options.hostname;
-    this.port = options.port;
-
+    const { fullNode = {}, solidity = {} } = options;
+    this.hostname = fullNode.hostname;
+    this.port = fullNode.port;
     const caller = require('grpc-caller');
     /**
      * @type {WalletClient}
      */
     this.api = caller(`${this.hostname}:${this.port}`, WalletClient);
-    this.solidityApi = caller(`${this.hostname}:${this.port}`, WalletSolidityClient);
+    this.solidityApi = caller(`${solidity.hostname}:${solidity.port}`, WalletSolidityClient);
   }
 
   /**

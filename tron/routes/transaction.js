@@ -3,7 +3,7 @@ const { Transaction } = require('@tronprotocol/wallet-api/src/protocol/core/Tron
 
 const { responseError, responseSuccess } = require('../libs/response');
 const httpClient = require('../libs/TronClient').httpClient;
-const grpcClient = require('../libs/TronClient').grpcClient;
+const getGrpcClient = require('../libs/TronClient').getGrpcClient;
 const { getBase64AddressFromBase58 } = require('../libs/tool/address');
 
 const {
@@ -18,7 +18,7 @@ const transaction = async (req, res, next) => {
 		return responseError(res, 50001, 'params should not be empty');
 	}
 	const transferContract = new TransferContract([getBase64AddressFromBase58(ownerAddress), getBase64AddressFromBase58(toAddress), amount]);
-	grpcClient.api.createTransaction(transferContract)
+	getGrpcClient().api.createTransaction(transferContract)
 		.then(data => {
 			// httpClient.signTransactionLocal(password, data)
 			// 	.then(d => {
