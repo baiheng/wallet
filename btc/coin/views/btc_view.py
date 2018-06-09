@@ -1,6 +1,7 @@
 #!/bin/env python
 # -*- coding:utf8 -*-
 
+import time
 import json
 import requests
 
@@ -9,12 +10,18 @@ from common import error_msg
 from common.mylog import logger
 
 from bit.network import NetworkAPI
-from bit.network import get_fee
+from bit.network import get_fee_cached
 from bit.network import satoshi_to_currency_cached
 from bit.network import currency_to_satoshi_cached
+from bit.network.rates import set_rate_cache_time
+from bit.network.fees import set_fee_cache_time
 
 
+CACHE_TIME = 12 * 60 * 60
+set_rate_cache_time(CACHE_TIME)
+set_fee_cache_time(CACHE_TIME)
 class BtcView(BaseView):
+    URL = "https://blockchain.info/zh-cn/"
     def post_action_broadcast(self):
         if not self.check_input_arguments(["tx_hex"]):
             return self._response(error_msg.PARAMS_ERROR)
@@ -27,13 +34,21 @@ class BtcView(BaseView):
         return self._response()
 
     def get_action_fee(self):
-        data = get_fee() 
+        data = get_fee_cached() 
         return self._response(data=data)
 
     def get_action_balance(self):
         if not self.check_input_arguments(["address"]):
             return self._response(error_msg.PARAMS_ERROR)
-        satoshi = NetworkAPI.get_balance(self._input["address"]) 
+        url = ("{}/balance?active={}".format(
+            self.URL,
+            self._input["address"]))
+        try:
+            r = requests.get(url).json()
+            satoshi = r.get("final_balance", 10000)
+        except Exception as e:
+            logger.error("requests address error{}".format(e))
+            return self._response(error_msg.SERVER_ERROR)
         if satoshi != 0:
             cny = satoshi_to_currency_cached(satoshi, "cny")
         else:
@@ -45,7 +60,7 @@ class BtcView(BaseView):
         if not self.check_input_arguments(["address"]):
             return self._response(error_msg.PARAMS_ERROR)
         unspent = NetworkAPI.get_unspent(self._input["address"]) 
-        return self._response(data=[i.to_dict() for i in unspent])
+        return self._response(data=[i.to_dict() for i in unspent if i.confirmations > 5])
 
     def get_action_transaction(self):
         if not self.check_input_arguments(["address", "page"]):
@@ -121,9 +136,14 @@ class BtcView(BaseView):
         return self._response()
 
     def get_action_block(self):
-        url = "https://insight.bitpay.com/api/blocks?limit=1"
-        r = requests.get(url).json()
-        self._data = r.get("blocks", [{}])[0].get("height", 0)
+        url = "{}/latestblock".format(self.URL)
+        try:
+            r = requests.get(url).json()
+            height = r.get("height", 0)
+        except Exception as e:
+            logger.error("requests lateblock error{}".format(e))
+            return self._response(error_msg.SERVER_ERROR)
+        self._data = height
         return self._response()
 
     def post_action_decode_tx(self):
