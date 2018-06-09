@@ -5,7 +5,7 @@
 class BaseConfig(object):
     DEBUG = True
     CREATE_TABLE = True
-    SERVER_PORT = 18289
+    SERVER_PORT = 10006
 
     # 3小时后自动重连mysql
     MYSQL_CONNECT_TIMEOUT = 3 * 24 * 60 * 60
@@ -32,5 +32,4 @@ class BaseConfig(object):
     CODE_EXPIRE_TIME = 5 * 60
     TEMPLATEID = 219065158
 
-    # btc cache time 1天
-    CACHE_TIME = 24 * 60 * 60
+    PAGE_SIZE = 10
