@@ -40,11 +40,18 @@ class BtcView(BaseView):
     def get_action_balance(self):
         if not self.check_input_arguments(["address"]):
             return self._response(error_msg.PARAMS_ERROR)
-        url = ("{}/q/addressbalance/{}?confirmations=6".format(
-            self.URL,
-            self._input["address"]))
+        #url = ("{}/q/addressbalance/{}?confirmations=6".format(
+        #    self.URL,
+        #    self._input["address"]))
+        url = ("{}/unspent?active={}&confirmations=6".format(
+                self.URL,
+                self._input["address"]
+                ))
         try:
-            satoshi = int(requests.get(url).text)
+            r = requests.get(url).json().get("unspent_outputs", [])
+            satoshi = 0
+            for i in r:
+                satoshi += i.get("value", 0)
         except Exception as e:
             logger.error("requests address error{}".format(e))
             return self._response(error_msg.SERVER_ERROR)
@@ -58,8 +65,25 @@ class BtcView(BaseView):
     def get_action_utxo(self):
         if not self.check_input_arguments(["address"]):
             return self._response(error_msg.PARAMS_ERROR)
-        unspent = NetworkAPI.get_unspent(self._input["address"]) 
-        return self._response(data=[i.to_dict() for i in unspent])
+        url = ("{}/unspent?active={}&confirmations=6".format(
+                self.URL,
+                self._input["address"]
+                ))
+        try:
+            r = requests.get(url).json().get("unspent_outputs", [])
+        except Exception as e:
+            logger.error("requests utxo error{}".format(e))
+            return self._response(error_msg.SERVER_ERROR)
+        data = []
+        for i in r:
+            data.append({
+                "amount": i.get("value", 0),
+                "confirmations": i.get("confirmations", 0),
+                "script": i.get("script", ""),
+                "txid": i.get("tx_hash_big_endian", ""),
+                "txindex": i.get("tx_output_n", ""),
+                })
+        return self._response(data=data)
 
     def get_action_transaction(self):
         if not self.check_input_arguments(["address", "page"]):
