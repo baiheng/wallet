@@ -40,13 +40,11 @@ class BtcView(BaseView):
     def get_action_balance(self):
         if not self.check_input_arguments(["address"]):
             return self._response(error_msg.PARAMS_ERROR)
-        url = ("{}/balance?active={}".format(
+        url = ("{}/q/addressbalance/{}?confirmations=6".format(
             self.URL,
             self._input["address"]))
         try:
-            r = requests.get(url).json()
-            r = r.get(self._input["address"], {})
-            satoshi = r.get("final_balance", 0)
+            satoshi = int(requests.get(url).text)
         except Exception as e:
             logger.error("requests address error{}".format(e))
             return self._response(error_msg.SERVER_ERROR)
@@ -61,7 +59,7 @@ class BtcView(BaseView):
         if not self.check_input_arguments(["address"]):
             return self._response(error_msg.PARAMS_ERROR)
         unspent = NetworkAPI.get_unspent(self._input["address"]) 
-        return self._response(data=[i.to_dict() for i in unspent if i.confirmations > 5])
+        return self._response(data=[i.to_dict() for i in unspent])
 
     def get_action_transaction(self):
         if not self.check_input_arguments(["address", "page"]):
