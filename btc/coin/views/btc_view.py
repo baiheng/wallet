@@ -45,7 +45,8 @@ class BtcView(BaseView):
             self._input["address"]))
         try:
             r = requests.get(url).json()
-            satoshi = r.get("final_balance", 10000)
+            r = r.get(self._input["address"], {})
+            satoshi = r.get("final_balance", 0)
         except Exception as e:
             logger.error("requests address error{}".format(e))
             return self._response(error_msg.SERVER_ERROR)
