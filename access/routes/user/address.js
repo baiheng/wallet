@@ -99,6 +99,42 @@ const getAddress = (req, res, next) => {
 						}
 					}
 					promises.push(request(opt))
+				}else if(result[i].type == "bch"){
+					var opt = {
+						uri: `${config.rpcHost}/v1/api/bch/balance`,
+						json: true,
+						qs: {
+							address: result[i].address
+						}
+					}
+					promises.push(request(opt))
+				}else if(result[i].type == "ltc"){
+					var opt = {
+						uri: `${config.rpcHost}/v1/api/ltc/balance`,
+						json: true,
+						qs: {
+							address: result[i].address
+						}
+					}
+					promises.push(request(opt))
+				}else if(result[i].type == "eos"){
+					var opt = {
+						uri: `${config.rpcHost}/v1/api/eos/balance`,
+						json: true,
+						qs: {
+							address: result[i].address
+						}
+					}
+					promises.push(request(opt))
+				}else if(result[i].type == "ripple"){
+					var opt = {
+						uri: `${config.rpcHost}/v1/api/ripple/balance`,
+						json: true,
+						qs: {
+							address: result[i].address
+						}
+					}
+					promises.push(request(opt))
 				}
 			}
 
@@ -125,6 +161,34 @@ const getAddress = (req, res, next) => {
 							data[i].cny = pData[i].data.cny || 0
 						}else{
 							throw "request eth balance error"
+						}
+					}else if(data[i].type == "bch"){
+						if(pData[i].ret == 0){
+							data[i].amount = pData[i].data.balance || 0
+							data[i].cny = pData[i].data.cny || 0
+						}else{
+							throw "request bch balance error"
+						}
+					}else if(data[i].type == "ltc"){
+						if(pData[i].ret == 0){
+							data[i].amount = pData[i].data.balance || 0
+							data[i].cny = pData[i].data.cny || 0
+						}else{
+							throw "request ltc balance error"
+						}
+					}else if(data[i].type == "eos"){
+						if(pData[i].ret == 0){
+							data[i].amount = pData[i].data.balance || 0
+							data[i].cny = pData[i].data.cny || 0
+						}else{
+							throw "request eos balance error"
+						}
+					}else if(data[i].type == "ripple"){
+						if(pData[i].ret == 0){
+							data[i].amount = pData[i].data.balance || 0
+							data[i].cny = pData[i].data.cny || 0
+						}else{
+							throw "request ripple balance error"
 						}
 					}
 				}
