@@ -34,17 +34,21 @@ class BchView(BaseView):
             return self._response(error_msg.SERVER_ERROR)
 
     def get_action_fee(self):
-        data = get_fee() 
+        #data = get_fee() 
+        data = 1
         return self._response(data=data)
 
     def get_action_balance(self):
         if not self.check_input_arguments(["address"]):
             return self._response(error_msg.PARAMS_ERROR)
         url = "{0}/v3/address/{1}".format(self.URL, self._input["address"])
+        print(url)
         data = requests.get(url).json().get("data", {})
         satoshi = data.get("balance", 0)
         if satoshi != 0:
-            cny = satoshi_to_currency_cached(satoshi, "cny")
+            url = "https://www.coingecko.com/coins/currency_exchange_rates.json"
+            r = requests.get(url).json().get("rates", {}).get("cny", 0)
+            cny = float(r) * satoshi / 100000000
         else:
             cny = 0
         data = dict(balance=str(satoshi), cny=float(cny))
@@ -54,7 +58,10 @@ class BchView(BaseView):
         if not self.check_input_arguments(["address"]):
             return self._response(error_msg.PARAMS_ERROR)
         url = "{0}/v3/address/{1}/unspent".format(self.URL, self._input["address"])
-        data = requests.get(url).json().get("data", {}).get("list", [])
+        url = "https://blockdozer.com/api/addr/{}/utxo"
+        url = "https://blockdozer.com/insight-api/addr/{}/utxo".format(self._input["address"])
+        print(url)
+        data = requests.get(url).json()
         return self._response(data=data)
 
     def get_action_transaction(self):
