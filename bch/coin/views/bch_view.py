@@ -46,9 +46,9 @@ class BchView(BaseView):
         data = requests.get(url).json().get("data", {})
         satoshi = data.get("balance", 0)
         if satoshi != 0:
-            url = "https://www.coingecko.com/coins/currency_exchange_rates.json"
-            r = requests.get(url).json().get("rates", {}).get("cny", 0)
-            cny = float(r) * satoshi / 100000000
+            url = "https://www.okcoin.com/api/v1/ticker.do?symbol=bch_usd"
+            r = requests.get(url).json().get("ticker", {}).get("last", 0)
+            cny = float(r) * 6.5 * satoshi / 100000000
         else:
             cny = 0
         data = dict(balance=str(satoshi), cny=float(cny))

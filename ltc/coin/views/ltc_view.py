@@ -48,7 +48,9 @@ class LtcView(BaseView):
             return self._response(error_msg.SERVER_ERROR)
         satoshi = int(r.text)
         if satoshi != 0:
-            cny = satoshi_to_currency_cached(satoshi, "cny")
+            url = "https://www.okcoin.com/api/v1/ticker.do?symbol=ltc_usd"
+            r = requests.get(url).json().get("ticker", {}).get("last", 0)
+            cny = float(r) * 6.5 * satoshi / 100000000
         else:
             cny = 0
         data = dict(balance=str(satoshi), cny=float(cny))
