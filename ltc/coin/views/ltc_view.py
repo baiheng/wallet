@@ -70,8 +70,8 @@ class LtcView(BaseView):
     def get_action_transaction(self):
         if not self.check_input_arguments(["address", "page"]):
             return self._response(error_msg.PARAMS_ERROR)
-        start = (int(self._input["page"]) - 1) * settings.PAGE_SIZE
-        end = int(self._input["page"]) * settings.PAGE_SIZE + 100
+        start = int(self._input["page"]) * settings.PAGE_SIZE
+        end = (int(self._input["page"]) + 1) * settings.PAGE_SIZE 
         url = "{0}/addr/{1}?from={2}&to={3}".format(
                 self.URL,
                 self._input["address"],
@@ -82,7 +82,7 @@ class LtcView(BaseView):
             return self._response(error_msg.SERVER_ERROR)
         data = r.json()
         transactions = data.get("transactions", [])
-        total_page = data.get("txApperances", 0) / settings.PAGE_SIZE + 1
+        total_page = int(data.get("txApperances", 0) / settings.PAGE_SIZE) + 1
         rd = list()
         for i in transactions:
             url = "{0}/tx/{1}".format(self.URL, i)
