@@ -71,6 +71,9 @@ class BchView(BaseView):
                 self.URL, self._input["address"], int(self._input["page"]) + 1)
         r = requests.get(url).json()
         self._data = r.get("data", {})
+        if "total_count" in self._data:
+            self._data["total_page"] = self._data.get("total_count", 0)
+            del self._data["total_count"]
         return self._response()
 
     def get_action_block(self):
