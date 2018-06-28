@@ -91,6 +91,7 @@ class BchView(BaseView):
                 "rawhex": self._input["tx_hex"],
                 }).json()
             if r.get("err_no", -1) == 0:
+                self._data = r.get("data", {})
                 return self._response()
             else:
                 logger.error("decode tx_hex error {0}".format(r))
