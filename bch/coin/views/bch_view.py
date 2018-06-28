@@ -65,9 +65,10 @@ class BchView(BaseView):
         return self._response(data=data)
 
     def get_action_transaction(self):
-        if not self.check_input_arguments(["tx_id"]):
+        if not self.check_input_arguments(["address", "page"]):
             return self._response(error_msg.PARAMS_ERROR)
-        url = "{0}/v3/tx/{1}".format(self.URL, self._input["tx_id"])
+        url = "{}/v3/address/{}/tx?page={}&pagesize=10".format(
+                self.URL, self._input["address"], int(self._input["page"]) + 1)
         r = requests.get(url).json()
         self._data = r.get("data", {})
         return self._response()
