@@ -34,8 +34,15 @@ class BtcView(BaseView):
         return self._response()
 
     def get_action_fee(self):
-        data = get_fee_cached() 
-        return self._response(data=data)
+        url = "https://bitcoinfees.earn.com/api/v1/fees/list"
+        try:
+            r = requests.get(url).json().get("fees", [])
+            for i in r:
+                if int(i["memCount"]) < 50 and int(i["dayCount"] > 1000):
+                    return self._response(data=i["minFee"])
+        except Exception as e:
+            logger.error("fee error", e)
+        return self._response(data=15)
 
     def get_action_balance(self):
         if not self.check_input_arguments(["address"]):

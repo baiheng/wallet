@@ -35,7 +35,7 @@ class LtcView(BaseView):
             return self._response(error_msg.SERVER_ERROR)
 
     def get_action_fee(self):
-        data = get_fee() 
+        data = 13
         return self._response(data=data)
 
     def get_action_balance(self):
