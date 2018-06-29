@@ -19,12 +19,13 @@ class BchView(BaseView):
     def post_action_broadcast(self):
         if not self.check_input_arguments(["tx_hex"]):
             return self._response(error_msg.PARAMS_ERROR)
-        url = "{0}/v3/tools/tx-publish".format(self.URL)
+        #url = "{0}/v3/tools/tx-publish".format(self.URL)
+        url = "https://bch-insight.bitpay.com/api/tx/send"
         try:
             r = requests.post(url, data={
-                "rawhex": self._input["tx_hex"],
+                "rawtx": self._input["tx_hex"],
                 }).json()
-            if r.get("err_no", -1) == 0:
+            if r.get("txid", "") != "":
                 return self._response()
             else:
                 logger.error("broadcast tx_hex error {0}".format(r))
