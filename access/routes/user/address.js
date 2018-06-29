@@ -17,7 +17,7 @@ const saveAddress = (req, res, next) => {
 	var promises = []
 	var defer = q.defer()
 	for(let i of address){
-		if(!coinList.indexOf(i.type)){
+		if(-1 == coinList.indexOf(i.type)){
 			continue
 		}
 		var opt = mysqlClient.query('select * from address where userID = ? and type = ?', [userID, i.type],
@@ -59,7 +59,7 @@ const getAddress = (req, res, next) => {
 			var promises = []
 			var defer = q.defer()
 			for(var i=0; i<result.length; i++){
-				if(!coinList.indexOf(result[i].type)){
+				if(-1 == coinList.indexOf(result[i].type)){
 					continue
 				}
 				data.push({
