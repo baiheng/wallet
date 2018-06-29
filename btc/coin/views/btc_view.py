@@ -59,7 +59,7 @@ class BtcView(BaseView):
             cny = satoshi_to_currency_cached(satoshi, "cny")
         else:
             cny = 0
-        data = dict(satoshi=str(satoshi), cny=float(cny))
+        data = dict(satoshi=str(satoshi), cny=float(cny), balance=str(satoshi))
         return self._response(data=data)
 
     def get_action_utxo(self):
