@@ -41,12 +41,16 @@ class LtcView(BaseView):
     def get_action_balance(self):
         if not self.check_input_arguments(["address"]):
             return self._response(error_msg.PARAMS_ERROR)
-        url = "{0}/addr/{1}/balance".format(
+        url = "{0}/addr/{1}/utxo".format(
                 self.URL, self._input["address"])
         r = requests.get(url)
         if r.status_code != requests.codes.ok:
             return self._response(error_msg.SERVER_ERROR)
-        satoshi = int(r.text)
+        data = r.json()
+        satoshi = 0
+        for i in data:
+            if i["confirmations"] >= 6:
+                satoshi += i["satoshis"]
         if satoshi != 0:
             url = "https://www.okcoin.com/api/v1/ticker.do?symbol=ltc_usd"
             r = requests.get(url).json().get("ticker", {}).get("last", 0)
@@ -65,7 +69,8 @@ class LtcView(BaseView):
         if r.status_code != requests.codes.ok:
             return self._response(error_msg.SERVER_ERROR)
         data = r.json()
-        return self._response(data=data)
+        self._data = [i for i in data if i["confirmations"] >= 6]
+        return self._response()
 
     def get_action_transaction(self):
         if not self.check_input_arguments(["address", "page"]):

@@ -42,10 +42,14 @@ class BchView(BaseView):
     def get_action_balance(self):
         if not self.check_input_arguments(["address"]):
             return self._response(error_msg.PARAMS_ERROR)
-        url = "{0}/v3/address/{1}".format(self.URL, self._input["address"])
-        print(url)
-        data = requests.get(url).json().get("data", {})
-        satoshi = data.get("balance", 0)
+        #url = "{0}/v3/address/{1}".format(self.URL, self._input["address"])
+        #r = requests.get(url).json()
+        url = "https://blockdozer.com/insight-api/addr/{}/utxo".format(self._input["address"])
+        data = requests.get(url).json()
+        satoshi = 0
+        for i in data:
+            if i["confirmations"] >= 6:
+                satoshi += i["satoshis"]
         if satoshi != 0:
             url = "https://www.okcoin.com/api/v1/ticker.do?symbol=bch_usd"
             r = requests.get(url).json().get("ticker", {}).get("last", 0)
@@ -61,9 +65,9 @@ class BchView(BaseView):
         url = "{0}/v3/address/{1}/unspent".format(self.URL, self._input["address"])
         url = "https://blockdozer.com/api/addr/{}/utxo"
         url = "https://blockdozer.com/insight-api/addr/{}/utxo".format(self._input["address"])
-        print(url)
         data = requests.get(url).json()
-        return self._response(data=data)
+        self._data = [i for i in data if i["confirmations"] >= 6]
+        return self._response()
 
     def get_action_transaction(self):
         if not self.check_input_arguments(["address", "page"]):
