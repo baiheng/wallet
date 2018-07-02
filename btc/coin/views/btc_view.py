@@ -61,7 +61,8 @@ class BtcView(BaseView):
                 satoshi += i.get("value", 0)
         except Exception as e:
             logger.error("requests address error{}".format(e))
-            return self._response(error_msg.SERVER_ERROR)
+            data = dict(satoshi=0, cny=0, balance=0)
+            return self._response(data=data)
         if satoshi != 0:
             cny = satoshi_to_currency_cached(satoshi, "cny")
         else:
