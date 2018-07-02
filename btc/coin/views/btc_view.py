@@ -76,12 +76,12 @@ class BtcView(BaseView):
                 self.URL,
                 self._input["address"]
                 ))
+        data = []
         try:
             r = requests.get(url).json().get("unspent_outputs", [])
         except Exception as e:
-            logger.error("requests utxo error{}".format(e))
-            return self._response(error_msg.SERVER_ERROR)
-        data = []
+            logger.error("requests no utxo error{}".format(e))
+            return self._response(data=data)
         for i in r:
             data.append({
                 "amount": i.get("value", 0),
