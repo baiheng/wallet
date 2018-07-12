@@ -29,7 +29,8 @@ class LtcView(BaseView):
                 return self._response()
             else:
                 logger.error("broadcast tx_hex error {0}".format(r.text))
-                return self._response(error_msg.SERVER_ERROR)
+                self._ret, self._msg = 50001, r.text
+                return self._response()
         except Exception as e:
             logger.error("broadcast tx_hex http error {0}".format(e))
             return self._response(error_msg.SERVER_ERROR)

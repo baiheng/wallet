@@ -30,7 +30,8 @@ class BtcView(BaseView):
         except Exception as e:
             logger.error("broadcast_tx error tx:{0}. error:{1}".format(
                 self._input.get("tx_hex"), e))
-            return self._response(error_msg.SERVER_ERROR)
+            self._ret, self._msg = 50001, e
+            return self._response()
         return self._response()
 
     def get_action_fee(self):
