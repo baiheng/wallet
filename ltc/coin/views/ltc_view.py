@@ -3,6 +3,7 @@
 
 import json
 import requests
+import time
 
 from common.base_view import BaseView
 from common import error_msg
@@ -15,6 +16,11 @@ from bit.network import satoshi_to_currency_cached
 from bit.network import currency_to_satoshi_cached
 
 
+cache = {
+    "last_time": 0,
+    "result": 0,
+    "timeout": 10 * 60,
+}
 class LtcView(BaseView):
     URL = "http://127.0.0.1:3001/insight-lite-api"
     def post_action_broadcast(self):
@@ -53,9 +59,14 @@ class LtcView(BaseView):
             if i["confirmations"] >= 6:
                 satoshi += i["satoshis"]
         if satoshi != 0:
-            url = "https://www.okcoin.com/api/v1/ticker.do?symbol=ltc_usd"
-            r = requests.get(url).json().get("ticker", {}).get("last", 0)
-            cny = float(r) * 6.5 * satoshi / 100000000
+            if cache["last_time"] > int(time.time()) - cache["timeout"]:
+                r = cache["result"]
+            else:
+                url = "https://www.okcoin.com/api/v1/ticker.do?symbol=ltc_usd"
+                r = requests.get(url).json().get("ticker", {}).get("last", 0)
+                cache["last_time"] = int(time.time())
+                cache["result"] = float(r)
+            cny = r * 6.5 * satoshi / 100000000
         else:
             cny = 0
         data = dict(balance=str(satoshi), cny=float(cny))
