@@ -19,7 +19,7 @@ from bit.network import currency_to_satoshi_cached
 cache = {
     "last_time": 0,
     "result": 0,
-    "timeout": 10 * 60,
+    "timeout": 30 * 60,
 }
 class LtcView(BaseView):
     URL = "http://127.0.0.1:3001/insight-lite-api"
@@ -62,8 +62,10 @@ class LtcView(BaseView):
             if cache["last_time"] > int(time.time()) - cache["timeout"]:
                 r = cache["result"]
             else:
-                url = "https://www.okcoin.com/api/v1/ticker.do?symbol=ltc_usd"
-                r = requests.get(url).json().get("ticker", {}).get("last", 0)
+                # url = "https://www.okcoin.com/api/v1/ticker.do?symbol=ltc_usd"
+                # r = requests.get(url).json().get("ticker", {}).get("last", 0)
+                url = "https://api.coinmarketcap.com/v1/ticker/litecoin/?convert=cny"
+                r = requests.get(url).json()[0].get("price_cny", 0)
                 cache["last_time"] = int(time.time())
                 cache["result"] = float(r)
             cny = r * 6.5 * satoshi / 100000000

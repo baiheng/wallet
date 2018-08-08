@@ -6,7 +6,7 @@ const { responseError, responseSuccess } = require('../../libs/response');
 const mysqlClient = require('../../libs/mysql');
 const config = require('../../config');
 
-const coinList = ["btc", "eth", "bch", "ltc", "eos", "ripple"]
+const coinList = ["btc", "eth", "etc", "bch", "ltc", "eos", "ripple", "game", "icon", "omisego", "vechain", 'bnb']
 
 const saveAddress = (req, res, next) => {
 	var { address, userID }= req.body;
@@ -84,7 +84,10 @@ const getAddress = (req, res, next) => {
 						data[i].amount = pData[i].data.balance || 0
 						data[i].cny = pData[i].data.cny || 0
 					}else{
-						throw "request " + data[i].type +  " balance error"
+						// throw "request " + data[i].type +  " balance error"
+						data[i].amount = 0
+						data[i].cy = 0
+						data[i].err = "request " + data[i].type +  " balance error"
 					}
 				}
 				defer.resolve();

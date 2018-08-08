@@ -18,7 +18,16 @@ const proxyClient = (uri) => {
 	})
 }
 
+const gasTrackerHost = `${config.url}v1/`;
+const gasTrackerClient = (uri) => {
+	return request({
+		uri: `${gasTrackerHost}${uri}`,
+		json: true,
+	});
+}
+
 module.exports = {
 	etcClient,
 	proxyClient,
+	gasTrackerClient,
 };

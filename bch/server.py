@@ -14,9 +14,7 @@ from sanic import Sanic
 app = Sanic(__name__)
 
 
-modules = [
-    'coin'
-]
+modules = ['coin']
 
 def dispatch(item):
     async def _dispatch(*args, **kwargs):

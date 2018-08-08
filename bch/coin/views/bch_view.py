@@ -60,11 +60,13 @@ class BchView(BaseView):
             if cache["last_time"] > int(time.time()) - cache["timeout"]:
                 r = cache["result"]
             else:
-                url = "https://www.okcoin.com/api/v1/ticker.do?symbol=bch_usd"
-                r = requests.get(url).json().get("ticker", {}).get("last", 0)
+                # url = "https://www.okcoin.com/api/v1/ticker.do?symbol=bch_usd"
+                # r = requests.get(url).json().get("ticker", {}).get("last", 0)
+                url = "https://api.coinmarketcap.com/v1/ticker/bitcoin-cash/?convert=cny"
+                r = requests.get(url).json()[0].get("price_cny", 0)
                 cache["last_time"] = int(time.time())
                 cache["result"] = float(r)
-            cny = r * 6.5 * satoshi / 100000000
+            cny = r * satoshi / 100000000
         else:
             cny = 0
         data = dict(balance=str(satoshi), cny=float(cny))
