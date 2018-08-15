@@ -9,7 +9,7 @@ const config = require('../../config');
 const coinList = ["btc", "eth", "etc", "bch", "ltc", "eos", "ripple", "game", "icon", "omisego", "vechain", 'bnb']
 
 const saveAddress = (req, res, next) => {
-	var { address, userID, devUdid }= req.body;
+	var { address, userID, dev }= req.body;
 	if(!Array.isArray(address) || userID == null){
 		return responseError(res, 3, "params error")
 	}
@@ -17,14 +17,14 @@ const saveAddress = (req, res, next) => {
 	var defer = q.defer()
 
     // 记录设备id
-    if (typeof devUdid != 'undefinded' && devUdid != '') {
-        var opt = mysqlClient.query('select * from device where userID = ? and udid = ?', [userID, devUdid],
+    if (dev != null) {
+        var opt = mysqlClient.query('select * from device where userID = ? and udid = ?', [userID, dev.udid],
             (err, res, fields) => {
                 if (err) {
                     return "db error " + err;
                 }
                 if (res.length == 0) {
-                    let sql = 'insert into device (userID, udid) values ("' + userID + '","' + devUdid + '")'
+                    let sql = 'insert into device (userID, udid) values ("' + userID + '","' + dev.udid + '")'
                     mysqlClient.query(sql, (err) => {
                         if (err) {
                             return "db error " + err;
