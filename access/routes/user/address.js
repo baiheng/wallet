@@ -9,26 +9,46 @@ const config = require('../../config');
 const coinList = ["btc", "eth", "etc", "bch", "ltc", "eos", "ripple", "game", "icon", "omisego", "vechain", 'bnb']
 
 const saveAddress = (req, res, next) => {
-	var { address, userID }= req.body;
-	console.log(req.body)
+	var { address, userID, devUdid }= req.body;
 	if(!Array.isArray(address) || userID == null){
 		return responseError(res, 3, "params error")
 	}
 	var promises = []
 	var defer = q.defer()
-	for(let i of address){
-		if(-1 == coinList.indexOf(i.type)){
+
+    // 记录设备id
+    if (typeof devUdid != 'undefinded' && devUdid != '') {
+        var opt = mysqlClient.query('select * from device where userID = ? and udid = ?', [userID, devUdid],
+            (err, res, fields) => {
+                if (err) {
+                    return "db error " + err;
+                }
+                if (res.length == 0) {
+                    let sql = 'insert into device (userID, udid) values ("' + userID + '","' + devUdid + '")'
+                    mysqlClient.query(sql, (err) => {
+                        if (err) {
+                            return "db error " + err;
+                        }
+                    });
+                }
+            }
+        );
+        promises.push(opt);
+    }
+
+	for (let i of address) {
+		if (-1 == coinList.indexOf(i.type)) {
 			continue
 		}
 		var opt = mysqlClient.query('select * from address where userID = ? and type = ?', [userID, i.type],
 			(error, result, fields) => {
-				if(error){
+				if (error) {
 					return "db error " + error
 				}
-				if(result.length == 0){
+				if (result.length == 0) {
 					let sql = 'insert into address (type, address, userID) values ("' + i.type + '", "' + i.address + '", "' + userID + '")'
 					mysqlClient.query(sql, (error) => {
-							if(error){
+							if (error) {
 								console.log(error)
 								return "db error " + error
 							}
