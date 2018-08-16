@@ -24,8 +24,7 @@ class BaseConfig(object):
     MYSQL_DB = "test_wallet"
 
     # redis
-    #REDIS_HOST = '127.0.0.1'
-    REDIS_HOST = '111.230.12.37'
+    REDIS_HOST = '127.0.0.1'
     REDIS_PORT = 6379
     REDIS_DB = '1'
     REDIS_PWD = ''
