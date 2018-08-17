@@ -18,6 +18,7 @@ const saveAddress = (req, res, next) => {
 
     // 记录设备id
     if (dev != null) {
+        console.log("UserID", userID, 'dev', dev);
         var opt = mysqlClient.query('select * from device where userID = ? and udid = ?', [userID, dev.udid],
             (err, res, fields) => {
                 if (err) {
