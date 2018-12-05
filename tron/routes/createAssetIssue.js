@@ -6,7 +6,6 @@ const { getBase64AddressFromBase58 } = require('../libs/tool/address');
 
 const transaction = async (req, res, next) => {
     const { ownerAddress, name, totalSupply = 100000, trxNum, num, startTime, endTime, decayRatio, voteScore, description, url  } = req.body;
-    console.log(req.body)
     if (!ownerAddress || !name) {
         return responseError(res, 50001, 'params should not be empty');
     }
