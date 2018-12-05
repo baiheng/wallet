@@ -30,37 +30,69 @@ class BtcView(BaseView):
         except Exception as e:
             logger.error("broadcast_tx error tx:{0}. error:{1}".format(
                 self._input.get("tx_hex"), e))
-            return self._response(error_msg.SERVER_ERROR)
+            self._ret, self._msg = 50001, e
+            return self._response()
         return self._response()
 
     def get_action_fee(self):
-        data = get_fee_cached() 
-        return self._response(data=data)
+        url = "https://bitcoinfees.earn.com/api/v1/fees/list"
+        try:
+            r = requests.get(url).json().get("fees", [])
+            for i in r:
+                if int(i["memCount"]) < 50 and int(i["dayCount"] > 1000):
+                    return self._response(data=i["minFee"])
+        except Exception as e:
+            logger.error("fee error", e)
+        return self._response(data=15)
 
     def get_action_balance(self):
         if not self.check_input_arguments(["address"]):
             return self._response(error_msg.PARAMS_ERROR)
-        url = ("{}/balance?active={}".format(
-            self.URL,
-            self._input["address"]))
+        #url = ("{}/q/addressbalance/{}?confirmations=6".format(
+        #    self.URL,
+        #    self._input["address"]))
+        url = ("{}/unspent?active={}&confirmations=6".format(
+                self.URL,
+                self._input["address"]
+                ))
         try:
-            r = requests.get(url).json()
-            satoshi = r.get("final_balance", 10000)
+            r = requests.get(url).json().get("unspent_outputs", [])
+            satoshi = 0
+            for i in r:
+                satoshi += i.get("value", 0)
         except Exception as e:
             logger.error("requests address error{}".format(e))
-            return self._response(error_msg.SERVER_ERROR)
+            data = dict(satoshi=0, cny=0, balance=0)
+            return self._response(data=data)
         if satoshi != 0:
             cny = satoshi_to_currency_cached(satoshi, "cny")
         else:
             cny = 0
-        data = dict(satoshi=str(satoshi), cny=float(cny))
+        data = dict(satoshi=str(satoshi), cny=float(cny), balance=str(satoshi))
         return self._response(data=data)
 
     def get_action_utxo(self):
         if not self.check_input_arguments(["address"]):
             return self._response(error_msg.PARAMS_ERROR)
-        unspent = NetworkAPI.get_unspent(self._input["address"]) 
-        return self._response(data=[i.to_dict() for i in unspent if i.confirmations > 5])
+        url = ("{}/unspent?active={}&confirmations=6".format(
+                self.URL,
+                self._input["address"]
+                ))
+        data = []
+        try:
+            r = requests.get(url).json().get("unspent_outputs", [])
+        except Exception as e:
+            logger.error("requests no utxo error{}".format(e))
+            return self._response(data=data)
+        for i in r:
+            data.append({
+                "amount": i.get("value", 0),
+                "confirmations": i.get("confirmations", 0),
+                "script": i.get("script", ""),
+                "txid": i.get("tx_hash_big_endian", ""),
+                "txindex": i.get("tx_output_n", ""),
+                })
+        return self._response(data=data)
 
     def get_action_transaction(self):
         if not self.check_input_arguments(["address", "page"]):

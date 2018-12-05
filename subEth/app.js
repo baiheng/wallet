@@ -29,7 +29,11 @@ config.contracts.forEach((contract) => {
   app.use((req, res, next) => {
     const reg = new RegExp(`^/api/${contract.name}`);
     const result = req.url.match(reg);
-    if(result)
+
+    const alias = config.alias[contract.name] || contract.name;
+    const aliasReg = new RegExp(`^/api/${alias}`);
+    const aliasResult = req.url.match(reg);
+    if(result || aliasResult)
       req.contract = { ...contract };
     next();
   })
@@ -42,9 +46,9 @@ fs.readdirSync('./routes').forEach((route) => {
 	const res = route.match(/^(\w+)(\.js)?/);
 	if(!res) return;
 	const routeName = res[1];
-  config.contracts.forEach(contract => {
-    app.use(`/api/${contract.name}/${routeName}`, require(`./routes/${route}`));
-  });
+  	config.contracts.forEach(contract => {
+    		app.use(`/api/${contract.name}/${routeName}`, require(`./routes/${route}`));
+  	});
 })
 
 app.use('/', index);

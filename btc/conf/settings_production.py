@@ -16,7 +16,8 @@ class BaseConfig(object):
     PRIVATE_KEY = '8434567812345678'
 
     # 数据查询ip
-    MYSQL_HOST = '127.0.0.1'
+    #MYSQL_HOST = '127.0.0.1'
+    MYSQL_HOST = '111.230.12.37'
     MYSQL_PORT = 3306
     MYSQL_USER = "root"
     MYSQL_PWD = ""

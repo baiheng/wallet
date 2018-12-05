@@ -10,8 +10,8 @@ const enhanceProxyPass = (app) => {
 			target: dest,
 			changeOrigin: true,
 			pathRewrite: {
-        [`/${version}${path}`] : path.replace(/\*$/, ''),     // rewrite path
-      },
+				[`/${version}${path}`] : path.replace(/\*$/, ''),     // rewrite path
+		      	},
 		})))
 	})
 }

@@ -27,7 +27,8 @@ const balance = (req, res, next) => {
 		action: 'eth_getTransactionCount',
 		tag: 'latest'
 	}
-	Promise.all([etherscan(balanceOption), convertToPrice(contract.name ,'cny'), etherscan(nonceOption)])
+	const alias = config.alias[contract.name] || contract.name;
+	Promise.all([etherscan(balanceOption), convertToPrice(alias ,'cny'), etherscan(nonceOption)])
 		.then(data => {
 			console.log(data);
 			const tBalance = data[0].result;

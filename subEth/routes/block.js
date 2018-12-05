@@ -21,8 +21,7 @@ const getBlockNumber = (req, res, next) => {
 
 	if (staticResult[name].txsCount && now - staticResult[name].lastModify <= 20 * 1000)
 		return responseSuccess(res, { blockNumber: staticResult[name].txsCount });
-	request({ uri, json: true })
-		.then(data => {
+		request({ uri, json: true }).then(data => {
 			staticResult[name].txsCount = data.contract.txsCount;
 			staticResult[name].lastModify = now;
 			return responseSuccess(res, { blockNumber: staticResult[name].txsCount })
