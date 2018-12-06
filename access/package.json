@@ -1,0 +1,38 @@
+{
+  "name": "access",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/coinAccess"
+  },
+  "dependencies": {
+    "body-parser": "~1.17.1",
+    "connect-redis": "^3.3.3",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.3",
+    "express": "~4.15.2",
+    "express-http-proxy": "^1.1.0",
+    "express-session": "^1.15.6",
+    "http-proxy-middleware": "^0.18.0",
+    "jade": "~1.11.0",
+    "log4js": "^2.7.0",
+    "morgan": "~1.8.1",
+    "mysql": "^2.15.0",
+    "q": "^1.5.1",
+    "redis": "^2.8.0",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2",
+    "serve-favicon": "~2.4.2",
+    "uuid": "^3.2.1"
+  },
+  "description": "接入层 负责鉴权等功能处理 按功能转发到各个服务接口",
+  "main": "app.js",
+  "devDependencies": {},
+  "keywords": [
+    "express",
+    "node",
+    "redis"
+  ],
+  "author": "kidd",
+  "license": "ISC"
+}

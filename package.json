@@ -1,0 +1,21 @@
+{
+  "name": "coin",
+  "version": "0.0.0",
+  "description": "Coin",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/OldKidd/coin.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bitsharesjs": "^1.8.0",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2",
+    "ripple-lib": "^1.0.0-beta.1"
+  }
+}
