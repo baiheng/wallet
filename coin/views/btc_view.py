@@ -8,6 +8,7 @@ from common.base_view import BaseView
 from common import error_msg
 from common.mylog import logger
 
+from bit import Key
 from bit.network import NetworkAPI
 from bit.network import get_fee
 from bit.network import satoshi_to_currency_cached
@@ -30,6 +31,14 @@ class BtcView(BaseView):
         data = get_fee() 
         return self._response(data=data)
 
+    def get_action_key(self):
+        key = Key()
+        data = {
+                "address": key.address,
+                "private_key": key.to_wif()
+            }
+        return self._response(data=data)
+
     def get_action_balance(self):
         if not self.check_input_arguments(["address"]):
             return self._response(error_msg.PARAMS_ERROR)
@@ -46,6 +55,23 @@ class BtcView(BaseView):
             return self._response(error_msg.PARAMS_ERROR)
         unspent = NetworkAPI.get_unspent(self._input["address"]) 
         return self._response(data=[i.to_dict() for i in unspent])
+
+    def post_action_transaction(self):
+        if not self.check_input_arguments(["address", "private_key", "amount"]):
+            return self._response(error_msg.PARAMS_ERROR)
+        try:
+            key = Key(self._input.get("private_key"))
+            transaction_id = key.send(
+                    [(str(self._input.get("address")), self._input.get("amount"), "satoshi")],
+                    fee=80,
+                    )
+            logger.info("create transaction {}".format(transaction_id))
+            return self._response(data=transaction_id)
+        except Exception as e:
+            logger.error("create transaction error {}".format(e))
+            self._msg = str(e)
+            self._ret = 1
+            return self._response()
 
     def get_action_transaction(self):
         if not self.check_input_arguments(["address", "page"]):
@@ -85,7 +111,7 @@ class BtcView(BaseView):
                 vout.append(s)
 
             tmp["amount"] = receive - send
-            if int(i.get("confirmations", 0)) > 6:
+            if int(i.get("confirmations", 0)) >= 6:
                 tmp["status"] = "confirmed"
             else:
                 tmp["status"] = "unconfirmed"
