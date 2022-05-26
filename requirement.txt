@@ -13,7 +13,7 @@ redis==2.10.6
 requests==2.18.4
 sanic==0.7.0
 SQLAlchemy==1.2.6
-ujson==1.35
+ujson==5.2.0
 urllib3==1.22
 uvloop==0.9.1
 websockets==4.0.1
